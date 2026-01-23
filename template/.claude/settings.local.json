@@ -1,0 +1,116 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "WebSearch",
+      "WebFetch",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(git *)",
+      "Bash(dotnet *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(echo *)",
+      "Bash(pwd)",
+      "Bash(which *)",
+      "Bash(open *)",
+      "Bash(start *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(unzip *)",
+      "Bash(tar *)",
+      "mcp__unity-mcp__manage_gameobject",
+      "mcp__unity-mcp__manage_console",
+      "mcp__unity-mcp__manage_asset",
+      "mcp__unity-mcp__manage_scene",
+      "mcp__unity-mcp__manage_script",
+      "mcp__unity-mcp__manage_editor",
+      "mcp__unity-mcp__manage_build",
+      "mcp__unity-mcp__manage_rendering",
+      "mcp__unity-mcp__manage_physics",
+      "mcp__unity-mcp__manage_packagemanager",
+      "mcp__unity-mcp__manage_profiler",
+      "mcp__unity-mcp__manage_menu_item",
+      "mcp__unity-mcp__manage_playerprefs",
+      "Skill(*)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(rm -r *)",
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)",
+      "Bash(* | bash)",
+      "Bash(* | sh)",
+      "Bash(eval *)",
+      "Bash(exec *)",
+      "Bash(dd *)",
+      "Bash(mkfs *)",
+      "Bash(* --no-preserve-root *)",
+      "Bash(* > /dev/*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "unity-mcp"
+  ],
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "mcp__unity-mcp__manage_script",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[SCRIPT] Script modified - verify-changes: Check console for compile errors, run quick test if needed.'"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_ARG_FILE_PATH\" == *.cs ]]; then echo '[C#] File edited - verify-changes: Wait for recompile, check for errors.'; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__unity-mcp__manage_gameobject",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[GAMEOBJECT] GameObject modified - scene-awareness: Track this change for potential rollback.'"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__unity-mcp__manage_physics",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[PHYSICS] Physics modified - verify-changes: Test collisions/triggers after this change.'"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[REMINDERS] (1) scene-awareness: Capture state before major changes (2) verify-changes: Test after modifications (3) quality-gate: Run before saying done (4) Document blockers to LEARNINGS.md'"
+          }
+        ]
+      }
+    ]
+  }
+}
