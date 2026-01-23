@@ -1,6 +1,6 @@
 {
   "name": "gamekit-cli",
-  "version": "0.0.5",
+  "version": "0.0.2",
   "description": "AI-powered Unity game development with Claude",
   "type": "module",
   "main": "dist/index.js",
