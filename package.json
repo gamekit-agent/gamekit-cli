@@ -1,0 +1,52 @@
+{
+  "name": "gamekit-cli",
+  "version": "0.0.5",
+  "description": "AI-powered Unity game development with Claude",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "gamekit": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "template"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "version:inject": "bun scripts/inject-version.ts",
+    "build:binary": "bun run version:inject && bun run build:darwin-arm64 && bun run build:darwin-x64 && bun run build:linux-x64 && bun run build:windows-x64",
+    "build:darwin-arm64": "bun build --compile --target=bun-darwin-arm64 --minify ./src/index.ts --outfile dist/gamekit-darwin-arm64",
+    "build:darwin-x64": "bun build --compile --target=bun-darwin-x64 --minify ./src/index.ts --outfile dist/gamekit-darwin-x64",
+    "build:linux-x64": "bun build --compile --target=bun-linux-x64 --minify ./src/index.ts --outfile dist/gamekit-linux-x64",
+    "build:windows-x64": "bun build --compile --target=bun-windows-x64 --minify ./src/index.ts --outfile dist/gamekit-windows-x64.exe",
+    "dev": "bun run src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "unity",
+    "normcore",
+    "multiplayer",
+    "game-development",
+    "ai",
+    "claude"
+  ],
+  "author": "Normal",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "inquirer": "^9.3.7",
+    "ora": "^8.1.1"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
