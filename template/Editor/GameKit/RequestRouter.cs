@@ -76,6 +76,18 @@ namespace GameKit
                 {
                     response = InspectHandler.Handle(context.Request);
                 }
+                else if (method == "POST" && path == "/api/create")
+                {
+                    response = CreateHandler.Handle(context.Request);
+                }
+                else if (method == "POST" && path == "/api/destroy")
+                {
+                    response = DestroyHandler.Handle(context.Request);
+                }
+                else if (method == "POST" && path == "/api/transform")
+                {
+                    response = TransformHandler.Handle(context.Request);
+                }
                 else
                 {
                     statusCode = 404;

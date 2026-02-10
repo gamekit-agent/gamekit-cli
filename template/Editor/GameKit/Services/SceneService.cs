@@ -210,7 +210,7 @@ namespace GameKit.Services
             return current;
         }
 
-        private static string GetHierarchyPath(Transform t)
+        internal static string GetHierarchyPath(Transform t)
         {
             var parts = new List<string>();
             var current = t;
