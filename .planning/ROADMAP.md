@@ -96,11 +96,11 @@ Plans:
   3. Running `gamekit set <path> <component> <property> <value>` sets properties on components, supporting Vector3, Color, bool, int, float, string, enum, and object references
   4. Running `gamekit transform <path>` sets position, rotation, and scale on a GameObject
   5. All scene write operations are undoable via Ctrl+Z in Unity
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: Implement GameObject creation, destruction, and transform manipulation
-- [ ] 05-02: Implement component management and SerializedProperty setting with undo integration
+- [ ] 05-01-PLAN.md — Create/destroy GameObjects, transform manipulation, AuthoringService + TypeResolver
+- [ ] 05-02-PLAN.md — Add components, set properties with PropertyDeserializer, complete scene authoring CLI
 
 ### Phase 6: Project Context & Build
 **Goal**: Claude can query project structure, read settings, trigger builds, and run tests without leaving the CLI
@@ -145,6 +145,6 @@ Phases execute in numeric order. Phases 2, 3, 4, 6 depend only on Phase 1 and co
 | 2. Core Feedback Loop | 3/3 | Complete | 2026-02-10 |
 | 3. Visual Feedback | 1/1 | Complete | 2026-02-10 |
 | 4. Scene Inspection | 2/2 | Complete | 2026-02-10 |
-| 5. Scene Authoring | 0/2 | Not started | - |
+| 5. Scene Authoring | 0/2 | Planned | - |
 | 6. Project Context & Build | 0/3 | Not started | - |
 | 7. Asset Management | 0/3 | Not started | - |
