@@ -96,6 +96,18 @@ namespace GameKit
                 {
                     response = SetPropertyHandler.Handle(context.Request);
                 }
+                else if (method == "GET" && path == "/api/list/scripts")
+                {
+                    response = ListHandler.HandleScripts(context.Request);
+                }
+                else if (method == "GET" && path == "/api/list/prefabs")
+                {
+                    response = ListHandler.HandlePrefabs(context.Request);
+                }
+                else if (method == "GET" && path == "/api/settings")
+                {
+                    response = SettingsHandler.Handle(context.Request);
+                }
                 else
                 {
                     statusCode = 404;
