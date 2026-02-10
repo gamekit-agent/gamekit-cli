@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Claude can write code, see the result, fix errors, and iterate on a Unity game through gamekit alone -- no MCP server, no third-party relay, no extra dependencies.
-**Current focus:** Phase 1: Foundation
+**Current focus:** Phase 2: Core Feedback Loop
 
 ## Current Position
 

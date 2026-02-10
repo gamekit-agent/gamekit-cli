@@ -12,7 +12,7 @@ This roadmap transforms gamekit from an MCP relay wrapper into a standalone Unit
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Replace MCP with HTTP bridge infrastructure and establish CLI conventions
+- [x] **Phase 1: Foundation** - Replace MCP with HTTP bridge infrastructure and establish CLI conventions
 - [ ] **Phase 2: Core Feedback Loop** - Compilation, console logs, and play mode control
 - [ ] **Phase 3: Visual Feedback** - Screenshot capture from Game view, Scene view, and specific cameras
 - [ ] **Phase 4: Scene Inspection** - Read-only scene understanding (hierarchy, components, properties)
@@ -35,9 +35,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Build Unity Editor plugin (C# HTTP server, main thread dispatch, domain reload survival, port management)
-- [ ] 01-02-PLAN.md — Build CLI connection layer (discovery, health check, bridge client, output formatting)
-- [ ] 01-03-PLAN.md — Strip MCP code and update init/doctor commands
+- [x] 01-01-PLAN.md — Build Unity Editor plugin (C# HTTP server, main thread dispatch, domain reload survival, port management)
+- [x] 01-02-PLAN.md — Build CLI connection layer (discovery, health check, bridge client, output formatting)
+- [x] 01-03-PLAN.md — Strip MCP code and update init/doctor commands
 
 ### Phase 2: Core Feedback Loop
 **Goal**: Claude can write code, trigger compilation, read errors, enter play mode, and read runtime logs -- the primary development loop works end-to-end through gamekit
@@ -141,7 +141,7 @@ Phases execute in numeric order. Phases 2, 3, 4, 6 depend only on Phase 1 and co
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Not started | - |
+| 1. Foundation | 3/3 | Complete | 2026-02-10 |
 | 2. Core Feedback Loop | 0/3 | Not started | - |
 | 3. Visual Feedback | 0/1 | Not started | - |
 | 4. Scene Inspection | 0/2 | Not started | - |
