@@ -72,6 +72,10 @@ namespace GameKit
                 {
                     response = HierarchyHandler.Handle(context.Request);
                 }
+                else if (method == "GET" && path == "/api/inspect")
+                {
+                    response = InspectHandler.Handle(context.Request);
+                }
                 else
                 {
                     statusCode = 404;
