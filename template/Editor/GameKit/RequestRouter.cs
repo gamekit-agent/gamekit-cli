@@ -3,6 +3,7 @@ using System.Net;
 using System.Text;
 using GameKit.Handlers;
 using GameKit.Models;
+using GameKit.Services;
 using Newtonsoft.Json;
 
 namespace GameKit
@@ -22,6 +23,10 @@ namespace GameKit
                 if (method == "GET" && path == "/api/health")
                 {
                     response = HealthHandler.Handle(context.Request);
+                }
+                else if (method == "POST" && path == "/api/refresh")
+                {
+                    response = RefreshHandler.Handle(context.Request);
                 }
                 else
                 {
