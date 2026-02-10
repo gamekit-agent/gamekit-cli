@@ -16,6 +16,8 @@ import { registerDestroyCommand } from './commands/destroy.js';
 import { registerTransformCommand } from './commands/transform.js';
 import { registerAddComponentCommand } from './commands/add-component.js';
 import { registerSetCommand } from './commands/set.js';
+import { registerListCommand } from './commands/list.js';
+import { registerSettingsCommand } from './commands/settings.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
 import { GameKitError } from './utils/connection.js';
 import { outputError } from './utils/output.js';
@@ -119,6 +121,12 @@ registerAddComponentCommand(program);
 
 // Set - set property values on components
 registerSetCommand(program);
+
+// List - list project assets (scripts, scenes, prefabs)
+registerListCommand(program);
+
+// Settings - show project settings
+registerSettingsCommand(program);
 
 // Show error for unknown commands
 program.on('command:*', (operands) => {
