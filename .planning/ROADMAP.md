@@ -111,12 +111,12 @@ Plans:
   2. Running `gamekit settings` returns project settings (layers, tags, physics, quality, input)
   3. Running `gamekit build --platform <target>` triggers a build and returns success/failure with a build report (size, warnings, errors)
   4. Running `gamekit test` runs Unity Test Framework tests and returns structured results (passed, failed, skipped, error messages)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 06-01: Implement project listing commands and settings query
-- [ ] 06-02: Implement build trigger with structured reporting
-- [ ] 06-03: Implement test runner integration
+- [ ] 06-01-PLAN.md -- Project asset listing (scripts, scenes, prefabs) and settings query (layers, tags, physics, quality, input)
+- [ ] 06-02-PLAN.md -- Build trigger with BuildPipeline.BuildPlayer and structured build report
+- [ ] 06-03-PLAN.md -- Test runner integration with TestRunnerApi callbacks and polling
 
 ### Phase 7: Asset Management
 **Goal**: Claude can create and manage Unity assets -- prefabs, materials, and animation queries -- completing the full game development toolkit
