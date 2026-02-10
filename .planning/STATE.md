@@ -9,17 +9,17 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 
 ## Current Position
 
-Phase: 6 of 7 (Project Context Build)
-Plan: 2 of 3 in current phase
-Status: Executing
-Last activity: 2026-02-10 -- Completed 06-02 (Build command)
+Phase: 6 of 7 (Project Context Build) -- COMPLETE
+Plan: 3 of 3 in current phase
+Status: Phase Complete
+Last activity: 2026-02-10 -- Completed 06-03 (Test command)
 
-Progress: [█████████░] 87%
+Progress: [██████████] 93%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
+- Total plans completed: 14
 - Average duration: 2min
 - Total execution time: 0.48 hours
 
@@ -32,10 +32,10 @@ Progress: [█████████░] 87%
 | 03-visual-feedback | 1 | 2min | 2min |
 | 04-scene-inspection | 2 | 4min | 2min |
 | 05-scene-authoring | 2 | 6min | 3min |
-| 06-project-context-build | 2 | 4min | 2min |
+| 06-project-context-build | 3 | 6min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (3min), 05-02 (3min), 06-01 (2min), 06-02 (2min)
+- Last 5 plans: 05-02 (3min), 06-01 (2min), 06-02 (2min), 06-03 (2min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -93,6 +93,9 @@ Recent decisions affecting current work:
 - Synchronous BuildPipeline.BuildPlayer with 600s CLI timeout for long builds
 - Platform aliases (win, mac, osx, linux64, etc.) mapped to BuildTarget enum
 - Directory-based output for WebGL/Linux/iOS, extension-based for Windows/Mac/Android
+- Combined TestMode flags (EditMode | PlayMode) for "both" mode -- Unity TestRunner handles sequencing
+- 1-second polling interval for test status (balances responsiveness vs overhead)
+- Non-zero exit code (process.exit(1)) after outputSuccess when tests fail
 
 ### Pending Todos
 
@@ -106,5 +109,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 06-02-PLAN.md (Build command)
+Stopped at: Completed 06-03-PLAN.md (Test command) -- Phase 6 complete
 Resume file: None
