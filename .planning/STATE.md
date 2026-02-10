@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Claude can write code, see the result, fix errors, and iterate on a Unity game through gamekit alone -- no MCP server, no third-party relay, no extra dependencies.
-**Current focus:** Phase 4: Scene Inspection
+**Current focus:** Phase 5: Scene Authoring
 
 ## Current Position
 
-Phase: 4 of 7 (Scene Inspection) -- COMPLETE
-Plan: 2 of 2 in current phase
-Status: Phase Complete
-Last activity: 2026-02-10 -- Completed 04-02 (GameObject inspection with property serialization)
+Phase: 5 of 7 (Scene Authoring)
+Plan: 1 of 2 in current phase
+Status: In Progress
+Last activity: 2026-02-10 -- Completed 05-01 (GameObject create/destroy/transform with undo)
 
-Progress: [██████░░░░] 60%
+Progress: [██████░░░░] 67%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
+- Total plans completed: 10
 - Average duration: 2min
-- Total execution time: 0.32 hours
+- Total execution time: 0.37 hours
 
 **By Phase:**
 
@@ -31,9 +31,10 @@ Progress: [██████░░░░] 60%
 | 02-core-feedback-loop | 3 | 6min | 2min |
 | 03-visual-feedback | 1 | 2min | 2min |
 | 04-scene-inspection | 2 | 4min | 2min |
+| 05-scene-authoring | 1 | 3min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (2min), 03-01 (2min), 04-01 (2min), 04-02 (2min)
+- Last 5 plans: 03-01 (2min), 04-01 (2min), 04-02 (2min), 05-01 (3min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -79,6 +80,10 @@ Recent decisions affecting current work:
 - Enum try-catch fallback to intValue for stale enum data
 - Generic types return "<complex>" (no recursive expansion; NextVisible flattens via propertyPath)
 - IsComponentEnabled cast chain: Behaviour > Renderer > Collider > default true
+- GuardPlayMode private helper for DRY play mode check across all authoring methods
+- SceneService.GetHierarchyPath changed from private to internal for cross-service reuse
+- ObjectFactory.CreateGameObject for auto-undo (instead of new GameObject + manual undo)
+- Clean up created object on parent-not-found before throwing (prevents orphaned objects)
 
 ### Pending Todos
 
@@ -92,5 +97,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 04-02-PLAN.md (GameObject inspection with property serialization) -- Phase 4 complete
+Stopped at: Completed 05-01-PLAN.md (GameObject create/destroy/transform with undo)
 Resume file: None
