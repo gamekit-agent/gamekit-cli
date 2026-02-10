@@ -23,6 +23,14 @@ namespace GameKit
                 return;
             }
 
+            // Screenshot endpoint bypasses the normal ApiResponse flow
+            // because it may return binary PNG data instead of JSON
+            if (method == "GET" && path == "/api/screenshot")
+            {
+                ScreenshotHandler.Handle(context);
+                return;
+            }
+
             ApiResponse response;
             int statusCode = 200;
 
