@@ -3,18 +3,18 @@ import chalk from 'chalk';
 import ora from 'ora';
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
 import {
   findUnityInstalls,
   createUnityProject,
   openUnityProject,
-  getMcpPackageUrl,
   isUnityProject,
   UnityInstall
 } from '../utils/unity.js';
 import { copyTemplateAsync } from '../utils/template.js';
-import { addMcpToManifest } from '../utils/manifest.js';
-import { generateMcpConfig, waitForMcpRelay, mcpRelayExists } from '../utils/mcp.js';
 import { createEditorScripts } from '../utils/assets.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Validate project name to prevent path traversal
@@ -24,23 +24,71 @@ export function isValidProjectName(name: string): boolean {
 }
 
 /**
+ * Get the path to the GameKit Unity plugin source directory.
+ * Resolves relative to this file, matching how template.ts locates the template.
+ */
+function getPluginSourcePath(): string {
+  // From src/commands/ -> ../../template/Editor/GameKit
+  const localPath = path.resolve(__dirname, '..', '..', 'template', 'Editor', 'GameKit');
+  if (fs.existsSync(localPath)) {
+    return localPath;
+  }
+
+  // Fallback: from dist/commands/ -> ../../template/Editor/GameKit
+  const distPath = path.resolve(__dirname, '..', '..', '..', 'template', 'Editor', 'GameKit');
+  if (fs.existsSync(distPath)) {
+    return distPath;
+  }
+
+  throw new Error('GameKit plugin source not found. Check your gamekit installation.');
+}
+
+/**
+ * Copy the GameKit Unity plugin into the project's Assets/Editor/GameKit/ directory.
+ * Uses fs.cpSync for recursive copy (available in Node.js 16+ / Bun).
+ */
+export function copyGameKitPlugin(projectPath: string): void {
+  const src = getPluginSourcePath();
+  const dest = path.join(projectPath, 'Assets', 'Editor', 'GameKit');
+  fs.cpSync(src, dest, { recursive: true });
+}
+
+/**
+ * Ensure .gamekit/ is in the project's .gitignore.
+ * Creates .gitignore if it doesn't exist.
+ */
+export function addGameKitToGitignore(projectPath: string): void {
+  const gitignorePath = path.join(projectPath, '.gitignore');
+  let content = '';
+
+  if (fs.existsSync(gitignorePath)) {
+    content = fs.readFileSync(gitignorePath, 'utf-8');
+  }
+
+  if (!content.includes('.gamekit/')) {
+    const separator = content.length > 0 && !content.endsWith('\n') ? '\n' : '';
+    fs.writeFileSync(gitignorePath, content + separator + '.gamekit/\n');
+  }
+}
+
+/**
  * Initialize an existing Unity project with Claude Code support
  */
 async function initExistingProject(projectPath: string): Promise<void> {
   console.log(chalk.blue(`
 ╔════════════════════════════════════════╗
-║    🎮 gamekit - Initialize Project     ║
+║    gamekit - Initialize Project        ║
 ║   Adding Claude Code to your project   ║
 ╚════════════════════════════════════════╝
 `));
 
-  console.log(chalk.green(`✓ Found existing Unity project\n`));
+  console.log(chalk.green('Found existing Unity project\n'));
 
-  // Find Unity installations to get version choices
+  // Find Unity installations (used for validation only)
   const installs = findUnityInstalls();
 
   if (installs.length === 0) {
-    console.log(chalk.red('❌ No Unity installations found.\n'));
+    console.log(chalk.red('No Unity installations found.\n'));
     console.log(chalk.gray('Unity Hub installs Unity to:'));
     console.log(chalk.gray('  Mac: /Applications/Unity/Hub/Editor/'));
     console.log(chalk.gray('  Windows: C:\\Program Files\\Unity\\Hub\\Editor\\\n'));
@@ -67,19 +115,6 @@ async function initExistingProject(projectPath: string): Promise<void> {
     }
   }
 
-  // Ask for Unity version
-  const { unityVersion } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'unityVersion',
-      message: 'Which Unity version is this project using?',
-      choices: installs.map((install: UnityInstall) => ({
-        name: `${install.version}${install.isUnity6 ? chalk.green(' (Unity 6 - recommended)') : ''}`,
-        value: install.version
-      }))
-    }
-  ]);
-
   const spinner = ora();
 
   // Step 1: Copy template files (if not skipped)
@@ -98,69 +133,44 @@ async function initExistingProject(projectPath: string): Promise<void> {
     }
   }
 
-  // Step 2: Add MCP package to manifest.json
-  spinner.start('Adding MCP package to project...');
+  // Step 2: Install GameKit Unity plugin
+  spinner.start('Installing GameKit Unity plugin...');
   try {
-    const manifestPath = path.join(projectPath, 'Packages', 'manifest.json');
-    if (fs.existsSync(manifestPath)) {
-      const mcpUrl = getMcpPackageUrl(unityVersion);
-      if (mcpUrl) {
-        addMcpToManifest(manifestPath, unityVersion);
-        spinner.succeed('MCP package added');
-      } else {
-        spinner.warn('MCP package not added (Unity version not supported)');
-        console.log(chalk.yellow('   Unity 2019 and older are not supported for MCP integration.\n'));
-      }
-    } else {
-      spinner.warn('manifest.json not found');
-    }
+    copyGameKitPlugin(projectPath);
+    spinner.succeed('GameKit plugin installed');
   } catch (error) {
-    spinner.fail('Failed to add MCP package');
+    spinner.fail('Failed to install GameKit plugin');
     if (error instanceof Error) {
       console.log(chalk.red(`Error: ${error.message}`));
     }
     process.exit(1);
   }
 
-  // Step 3: Generate .mcp.json
-  spinner.start('Configuring MCP for Claude Code...');
+  // Step 3: Configure project (add .gamekit/ to .gitignore)
+  spinner.start('Configuring project...');
   try {
-    generateMcpConfig(projectPath);
-    spinner.succeed('MCP configured');
+    addGameKitToGitignore(projectPath);
+    spinner.succeed('Project configured');
   } catch (error) {
-    spinner.fail('Failed to configure MCP');
+    spinner.fail('Failed to configure project');
     if (error instanceof Error) {
       console.log(chalk.red(`Error: ${error.message}`));
     }
     process.exit(1);
   }
 
-  // Check if MCP relay already exists (user may have used this before)
-  if (mcpRelayExists()) {
-    console.log(chalk.green(`
+  console.log(chalk.green(`
 ╔════════════════════════════════════════╗
-║       ✓ Project Initialized!           ║
+║       Project Initialized!             ║
 ╚════════════════════════════════════════╝
 `));
-    console.log(chalk.blue('Ready to go!\n'));
-    console.log(chalk.white(`  1. ${chalk.cyan('Restart Unity')}`));
-    console.log(chalk.gray('     To load the new MCP package\n'));
-    console.log(chalk.white(`  2. ${chalk.cyan('claude')}`));
-    console.log(chalk.gray('     Start building with AI!\n'));
-  } else {
-    console.log(chalk.green(`
-╔════════════════════════════════════════╗
-║       ✓ Project Initialized!           ║
-╚════════════════════════════════════════╝
-`));
-    console.log(chalk.blue('Next steps:\n'));
-    console.log(chalk.white(`  1. ${chalk.cyan('Restart Unity')}`));
-    console.log(chalk.gray('     To load the new MCP package\n'));
-    console.log(chalk.white(`  2. ${chalk.cyan('claude')}`));
-    console.log(chalk.gray('     Start building with AI!\n'));
-  }
+  console.log(chalk.blue('Next steps:\n'));
+  console.log(chalk.white(`  1. ${chalk.cyan('Open Unity')}`));
+  console.log(chalk.gray('     To start the GameKit plugin\n'));
+  console.log(chalk.white(`  2. ${chalk.cyan('claude')}`));
+  console.log(chalk.gray('     Start building with AI!\n'));
 
-  console.log(chalk.gray('─'.repeat(44)));
+  console.log(chalk.gray('\u2500'.repeat(44)));
   console.log(chalk.gray('\nTip: Use /new-game to start building!'));
   console.log(chalk.gray('Example: /new-game space shooter where you dodge asteroids\n'));
 }
@@ -171,7 +181,7 @@ async function initExistingProject(projectPath: string): Promise<void> {
 async function createNewProject(): Promise<void> {
   console.log(chalk.blue(`
 ╔════════════════════════════════════════╗
-║       🎮 gamekit - Create Game         ║
+║       gamekit - Create Game            ║
 ║   AI-powered Unity game development    ║
 ╚════════════════════════════════════════╝
 `));
@@ -181,7 +191,7 @@ async function createNewProject(): Promise<void> {
   const installs = findUnityInstalls();
 
   if (installs.length === 0) {
-    console.log(chalk.red('❌ No Unity installations found.\n'));
+    console.log(chalk.red('No Unity installations found.\n'));
     console.log(chalk.gray('Unity Hub installs Unity to:'));
     console.log(chalk.gray('  Mac: /Applications/Unity/Hub/Editor/'));
     console.log(chalk.gray('  Windows: C:\\Program Files\\Unity\\Hub\\Editor\\\n'));
@@ -189,7 +199,7 @@ async function createNewProject(): Promise<void> {
     process.exit(1);
   }
 
-  console.log(chalk.green(`✓ Found ${installs.length} Unity installation${installs.length > 1 ? 's' : ''}\n`));
+  console.log(chalk.green(`Found ${installs.length} Unity installation${installs.length > 1 ? 's' : ''}\n`));
 
   // Step 2: Get project details
   const answers = await inquirer.prompt([
@@ -224,7 +234,7 @@ async function createNewProject(): Promise<void> {
   const projectPath = path.resolve(projectName);
   const selectedInstall = installs.find((i: UnityInstall) => i.version === answers.unityVersion)!;
 
-  console.log(chalk.blue(`\n📁 Creating "${projectName}"...\n`));
+  console.log(chalk.blue(`\nCreating "${projectName}"...\n`));
 
   // Step 3: Create Unity project
   const spinner = ora('Creating Unity project (this may take a minute)...').start();
@@ -255,37 +265,26 @@ async function createNewProject(): Promise<void> {
     process.exit(1);
   }
 
-  // Step 5: Add MCP package to Unity's manifest.json
-  spinner.start('Adding MCP package to project...');
+  // Step 5: Install GameKit Unity plugin
+  spinner.start('Installing GameKit Unity plugin...');
   try {
-    const manifestPath = path.join(projectPath, 'Packages', 'manifest.json');
-    if (fs.existsSync(manifestPath)) {
-      const mcpUrl = getMcpPackageUrl(answers.unityVersion);
-      if (mcpUrl) {
-        addMcpToManifest(manifestPath, answers.unityVersion);
-        spinner.succeed('MCP package added');
-      } else {
-        spinner.warn('MCP package not added (Unity version not supported)');
-        console.log(chalk.yellow('   Unity 2019 and older are not supported for MCP integration.\n'));
-      }
-    } else {
-      spinner.warn('manifest.json not found');
-    }
+    copyGameKitPlugin(projectPath);
+    spinner.succeed('GameKit plugin installed');
   } catch (error) {
-    spinner.fail('Failed to add MCP package');
+    spinner.fail('Failed to install GameKit plugin');
     if (error instanceof Error) {
       console.log(chalk.red(`Error: ${error.message}`));
     }
     process.exit(1);
   }
 
-  // Step 6: Generate .mcp.json
-  spinner.start('Configuring MCP for Claude Code...');
+  // Step 6: Configure project (add .gamekit/ to .gitignore)
+  spinner.start('Configuring project...');
   try {
-    generateMcpConfig(projectPath);
-    spinner.succeed('MCP configured');
+    addGameKitToGitignore(projectPath);
+    spinner.succeed('Project configured');
   } catch (error) {
-    spinner.fail('Failed to configure MCP');
+    spinner.fail('Failed to configure project');
     if (error instanceof Error) {
       console.log(chalk.red(`Error: ${error.message}`));
     }
@@ -302,38 +301,24 @@ async function createNewProject(): Promise<void> {
     console.log(chalk.gray('  Please open the project manually in Unity Hub.\n'));
   }
 
-  // Step 8: Wait for MCP relay to be installed
-  console.log(chalk.gray('\n  Unity is installing packages. This usually takes 1-2 minutes.\n'));
-  const mcpReady = await waitForMcpRelay({ timeoutMs: 5 * 60 * 1000 });
-
   // Success!
   console.log(chalk.green(`
 ╔════════════════════════════════════════╗
-║         ✓ Project Created!             ║
+║         Project Created!               ║
 ╚════════════════════════════════════════╝
 `));
 
   const cdCmd = `cd ${projectName}`;
 
-  if (mcpReady) {
-    console.log(chalk.blue('Next steps:\n'));
-    console.log(chalk.white(`  1. ${chalk.cyan(cdCmd)}`));
-    console.log(chalk.gray('     Navigate to your project\n'));
-    console.log(chalk.white(`  2. ${chalk.green('✓')} ${chalk.cyan('Wait for Unity to finish loading')}`));
-    console.log(chalk.gray('     Packages installed automatically\n'));
-    console.log(chalk.white(`  3. ${chalk.cyan('claude')}`));
-    console.log(chalk.gray('     Start building with AI!\n'));
-  } else {
-    console.log(chalk.blue('Next steps:\n'));
-    console.log(chalk.white(`  1. ${chalk.cyan(cdCmd)}`));
-    console.log(chalk.gray('     Navigate to your project\n'));
-    console.log(chalk.white(`  2. ${chalk.cyan('Wait for Unity to finish loading')}`));
-    console.log(chalk.gray('     Packages will install automatically (~1-2 min)\n'));
-    console.log(chalk.white(`  3. ${chalk.cyan('claude')}`));
-    console.log(chalk.gray('     Start building with AI!\n'));
-  }
+  console.log(chalk.blue('Next steps:\n'));
+  console.log(chalk.white(`  1. ${chalk.cyan(cdCmd)}`));
+  console.log(chalk.gray('     Navigate to your project\n'));
+  console.log(chalk.white(`  2. ${chalk.cyan('Wait for Unity to finish loading')}`));
+  console.log(chalk.gray('     The GameKit plugin starts automatically\n'));
+  console.log(chalk.white(`  3. ${chalk.cyan('claude')}`));
+  console.log(chalk.gray('     Start building with AI!\n'));
 
-  console.log(chalk.gray('─'.repeat(44)));
+  console.log(chalk.gray('\u2500'.repeat(44)));
   console.log(chalk.gray('\nTip: Use /new-game to start building!'));
   console.log(chalk.gray('Example: /new-game space shooter where you dodge asteroids\n'));
 }

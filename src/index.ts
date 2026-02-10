@@ -19,7 +19,8 @@ const program = new Command();
 
 program
   .name('gamekit')
-  .description('AI-powered Unity game development with Claude');
+  .description('AI-powered Unity game development with Claude')
+  .option('--json', 'Output raw JSON (default when stdout is piped)');
 
 // Version command
 program

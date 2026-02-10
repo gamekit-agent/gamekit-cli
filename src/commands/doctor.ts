@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import * as fs from 'fs';
-import { hasMcpConfig, mcpRelayExists } from '../utils/mcp.js';
+import { readServerInfo, healthCheck, GameKitError } from '../utils/connection.js';
 import { hasClaudeCommands } from '../utils/commands.js';
 import { findUnityInstalls } from '../utils/unity.js';
 
@@ -12,27 +12,32 @@ export interface CheckResult {
 }
 
 export async function runDoctor(): Promise<void> {
-  console.log(chalk.blue('\n🔍 Diagnosing gamekit setup...\n'));
+  console.log(chalk.blue('\nDiagnosing gamekit setup...\n'));
 
-  const checks = [
+  const syncChecks = [
     checkUnityInstalled(),
     checkUnityProject(),
     checkClaudeCommands(),
-    checkMcpConfig(),
-    checkMcpRelay(),
+    checkPluginInstalled(),
   ];
+
+  const asyncChecks = [
+    await checkPluginConnection(),
+  ];
+
+  const checks = [...syncChecks, ...asyncChecks];
 
   let allPassed = true;
   let hasWarnings = false;
 
   for (const check of checks) {
     if (check.passed) {
-      console.log(chalk.green(`✓ ${check.name}`));
+      console.log(chalk.green(`  ${check.name}`));
       if (check.message) {
         console.log(chalk.gray(`  ${check.message}`));
       }
     } else if (check.fix) {
-      console.log(chalk.red(`✗ ${check.name}`));
+      console.log(chalk.red(`  ${check.name}`));
       console.log(chalk.gray(`  Fix: ${check.fix}`));
       allPassed = false;
     } else {
@@ -47,7 +52,7 @@ export async function runDoctor(): Promise<void> {
   console.log('');
 
   if (allPassed && !hasWarnings) {
-    console.log(chalk.green('✓ All checks passed! Ready to build games.\n'));
+    console.log(chalk.green('All checks passed! Ready to build games.\n'));
     console.log(chalk.gray('Run "claude" in this directory to start coding.\n'));
   } else if (allPassed && hasWarnings) {
     console.log(chalk.yellow('Setup looks good with minor warnings.\n'));
@@ -92,27 +97,49 @@ function checkClaudeCommands(): CheckResult {
   };
 }
 
-function checkMcpConfig(): CheckResult {
-  const hasConfig = hasMcpConfig(process.cwd());
+export function checkPluginInstalled(): CheckResult {
+  const pluginExists = fs.existsSync('Assets/Editor/GameKit/GameKitServer.cs');
   return {
-    name: 'MCP configured (.mcp.json)',
-    passed: hasConfig,
-    fix: hasConfig ? undefined : 'Run: gamekit init'
+    name: 'GameKit plugin installed',
+    passed: pluginExists,
+    fix: pluginExists ? undefined : 'Run: gamekit init'
   };
 }
 
-function checkMcpRelay(): CheckResult {
-  const relayExists = mcpRelayExists();
-  if (relayExists) {
+export async function checkPluginConnection(): Promise<CheckResult> {
+  try {
+    const info = readServerInfo(process.cwd());
+    const healthy = await healthCheck(info.port);
+
+    if (healthy) {
+      return {
+        name: 'Unity plugin connected',
+        passed: true,
+        message: `Port ${info.port}, Unity ${info.unityVersion}`
+      };
+    }
+
     return {
-      name: 'MCP relay installed',
-      passed: true
+      name: 'Unity plugin connected',
+      passed: false,
+      fix: 'Plugin not responding, try restarting Unity'
+    };
+  } catch (error) {
+    if (error instanceof GameKitError) {
+      if (error.code === 'UNITY_NOT_RUNNING') {
+        return {
+          name: 'Unity plugin connected',
+          passed: false,
+          // No fix -- this is a warning since Unity just needs to be open
+          message: 'Open your project in Unity to start the plugin'
+        };
+      }
+    }
+
+    return {
+      name: 'Unity plugin connected',
+      passed: false,
+      message: 'Unity is not running'
     };
   }
-  return {
-    name: 'MCP relay installed',
-    passed: false,
-    // No fix - this is a warning since it installs when Unity opens
-    message: 'Opens Unity to install packages (relay installs automatically)'
-  };
 }
