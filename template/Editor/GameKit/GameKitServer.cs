@@ -85,7 +85,17 @@ namespace GameKit
             try
             {
                 var context = _listener.EndGetContext(result);
-                MainThreadDispatcher.Invoke(() => RequestRouter.HandleRequest(context));
+
+                // SSE streaming endpoints must NOT be dispatched to the main thread
+                // because they hold the connection open indefinitely
+                if (context.Request.Url.AbsolutePath == "/api/console/stream")
+                {
+                    RequestRouter.HandleRequest(context);
+                }
+                else
+                {
+                    MainThreadDispatcher.Invoke(() => RequestRouter.HandleRequest(context));
+                }
             }
             catch (ObjectDisposedException)
             {

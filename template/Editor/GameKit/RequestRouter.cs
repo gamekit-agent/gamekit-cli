@@ -12,14 +12,22 @@ namespace GameKit
     {
         public static void HandleRequest(HttpListenerContext context)
         {
+            var path = context.Request.Url.AbsolutePath;
+            var method = context.Request.HttpMethod;
+
+            // SSE streaming endpoints bypass the normal ApiResponse flow
+            // because they hold the connection open and manage the response lifecycle themselves
+            if (method == "GET" && path == "/api/console/stream")
+            {
+                ConsoleHandler.HandleStream(context);
+                return;
+            }
+
             ApiResponse response;
             int statusCode = 200;
 
             try
             {
-                var path = context.Request.Url.AbsolutePath;
-                var method = context.Request.HttpMethod;
-
                 if (method == "GET" && path == "/api/health")
                 {
                     response = HealthHandler.Handle(context.Request);
@@ -27,6 +35,10 @@ namespace GameKit
                 else if (method == "POST" && path == "/api/refresh")
                 {
                     response = RefreshHandler.Handle(context.Request);
+                }
+                else if (method == "GET" && path == "/api/console")
+                {
+                    response = ConsoleHandler.Handle(context.Request);
                 }
                 else
                 {
