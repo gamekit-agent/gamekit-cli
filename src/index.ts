@@ -10,6 +10,7 @@ import { registerPlayCommand } from './commands/play.js';
 import { registerScreenshotCommand } from './commands/screenshot.js';
 import { registerSceneCommand } from './commands/scene.js';
 import { registerHierarchyCommand } from './commands/hierarchy.js';
+import { registerInspectCommand } from './commands/inspect.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
 import { GameKitError } from './utils/connection.js';
 import { outputError } from './utils/output.js';
@@ -95,6 +96,9 @@ registerSceneCommand(program);
 
 // Hierarchy - inspect scene hierarchy
 registerHierarchyCommand(program);
+
+// Inspect - inspect GameObject properties
+registerInspectCommand(program);
 
 // Show error for unknown commands
 program.on('command:*', (operands) => {
