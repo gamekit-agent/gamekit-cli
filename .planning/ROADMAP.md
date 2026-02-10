@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Replace MCP with HTTP bridge infrastructure and establish CLI conventions
 - [x] **Phase 2: Core Feedback Loop** - Compilation, console logs, and play mode control
-- [ ] **Phase 3: Visual Feedback** - Screenshot capture from Game view, Scene view, and specific cameras
+- [x] **Phase 3: Visual Feedback** - Screenshot capture from Game view, Scene view, and specific cameras
 - [ ] **Phase 4: Scene Inspection** - Read-only scene understanding (hierarchy, components, properties)
 - [ ] **Phase 5: Scene Authoring** - Create, modify, and delete GameObjects and components
 - [ ] **Phase 6: Project Context & Build** - Project queries, build automation, and test runner
@@ -68,7 +68,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 03-01-PLAN.md — Screenshot capture (ScreenshotService, ScreenshotHandler, CLI command with Game/Scene/camera/binary modes)
+- [x] 03-01-PLAN.md — Screenshot capture (ScreenshotService, ScreenshotHandler, CLI command with Game/Scene/camera/binary modes)
 
 ### Phase 4: Scene Inspection
 **Goal**: Claude can understand what exists in a Unity scene -- the full hierarchy, every component, and all serialized property values
@@ -143,7 +143,7 @@ Phases execute in numeric order. Phases 2, 3, 4, 6 depend only on Phase 1 and co
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-02-10 |
 | 2. Core Feedback Loop | 3/3 | Complete | 2026-02-10 |
-| 3. Visual Feedback | 0/1 | Planned | - |
+| 3. Visual Feedback | 1/1 | Complete | 2026-02-10 |
 | 4. Scene Inspection | 0/2 | Not started | - |
 | 5. Scene Authoring | 0/2 | Not started | - |
 | 6. Project Context & Build | 0/3 | Not started | - |
