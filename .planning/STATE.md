@@ -9,28 +9,29 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 
 ## Current Position
 
-Phase: 1 of 7 (Foundation) -- COMPLETE
-Plan: 3 of 3 in current phase
-Status: Phase Complete
-Last activity: 2026-02-10 -- Completed 01-03 (Strip MCP, wire plugin)
+Phase: 2 of 7 (Core Feedback Loop)
+Plan: 1 of 3 in current phase
+Status: Executing
+Last activity: 2026-02-10 -- Completed 02-01 (Refresh/Compile endpoint + CLI command)
 
-Progress: [██░░░░░░░░] 14%
+Progress: [███░░░░░░░] 19%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: 3min
-- Total execution time: 0.13 hours
+- Total execution time: 0.17 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 8min | 3min |
+| 02-core-feedback-loop | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2min), 01-02 (2min), 01-03 (4min)
+- Last 5 plans: 01-01 (2min), 01-02 (2min), 01-03 (4min), 02-01 (2min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -56,6 +57,10 @@ Recent decisions affecting current work:
 - fs.cpSync (recursive) for plugin installation -- single call, Node 16+/Bun
 - Plugin connection check is a warning when Unity not running (not an error)
 - --json global CLI flag for structured output
+- Synchronous-first refresh: call AssetDatabase.Refresh() then check isCompiling, return 'compiling' only if async
+- CLI polls same POST /refresh endpoint when compilation is async (no separate status endpoint)
+- 60s timeout for refresh requests to handle large Unity projects
+- Service layer pattern: static classes in GameKit.Services with [InitializeOnLoadMethod]
 
 ### Pending Todos
 
@@ -69,5 +74,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 01-03-PLAN.md (Strip MCP, wire plugin) -- Phase 1 complete
+Stopped at: Completed 02-01-PLAN.md (Refresh/Compile endpoint + CLI command)
 Resume file: None
