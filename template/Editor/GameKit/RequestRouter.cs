@@ -112,6 +112,14 @@ namespace GameKit
                 {
                     response = BuildHandler.Handle(context.Request);
                 }
+                else if (method == "POST" && path == "/api/test/run")
+                {
+                    response = TestHandler.HandleRun(context.Request);
+                }
+                else if (method == "GET" && path == "/api/test/status")
+                {
+                    response = TestHandler.HandleStatus(context.Request);
+                }
                 else
                 {
                     statusCode = 404;
