@@ -120,6 +120,10 @@ namespace GameKit
                 {
                     response = TestHandler.HandleStatus(context.Request);
                 }
+                else if (method == "GET" && path == "/api/animator/list")
+                {
+                    response = AnimatorHandler.HandleList(context.Request);
+                }
                 else
                 {
                     statusCode = 404;
