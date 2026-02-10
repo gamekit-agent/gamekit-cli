@@ -49,12 +49,12 @@ Plans:
   3. Running `gamekit console --follow` streams logs in real-time as they appear in Unity
   4. Running `gamekit play start` enters play mode, `gamekit play stop` exits it, and `gamekit play status` reports current state
   5. Runtime exceptions during play mode are captured with full stack traces and accessible via `gamekit console`
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: Implement refresh/compile handler and CLI command
-- [ ] 02-02: Implement console log buffer, filtering, and streaming
-- [ ] 02-03: Implement play mode control and runtime log capture
+- [ ] 02-01-PLAN.md — Refresh/compile handler and CLI command (CompilationService, RefreshHandler, gamekit refresh)
+- [ ] 02-02-PLAN.md — Console log buffer, filtering, and SSE streaming (LogService, ConsoleHandler, gamekit console --follow)
+- [ ] 02-03-PLAN.md — Play mode control (PlayHandler, gamekit play start/stop/status)
 
 ### Phase 3: Visual Feedback
 **Goal**: Claude can see what the game looks like by capturing screenshots from the Unity Editor
