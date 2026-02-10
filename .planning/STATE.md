@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Claude can write code, see the result, fix errors, and iterate on a Unity game through gamekit alone -- no MCP server, no third-party relay, no extra dependencies.
-**Current focus:** Phase 3: Visual Feedback
+**Current focus:** Phase 4: Scene Inspection
 
 ## Current Position
 
-Phase: 3 of 7 (Visual Feedback) -- COMPLETE
-Plan: 1 of 1 in current phase
-Status: Phase complete
-Last activity: 2026-02-10 -- Completed 03-01 (Screenshot capture)
+Phase: 4 of 7 (Scene Inspection)
+Plan: 1 of 2 in current phase
+Status: Executing
+Last activity: 2026-02-10 -- Completed 04-01 (Scene & hierarchy inspection)
 
-Progress: [████░░░░░░] 43%
+Progress: [█████░░░░░] 53%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 2min
-- Total execution time: 0.26 hours
+- Total execution time: 0.29 hours
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: [████░░░░░░] 43%
 | 01-foundation | 3 | 8min | 3min |
 | 02-core-feedback-loop | 3 | 6min | 2min |
 | 03-visual-feedback | 1 | 2min | 2min |
+| 04-scene-inspection | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (2min), 02-02 (2min), 02-03 (2min), 03-01 (2min)
+- Last 5 plans: 02-02 (2min), 02-03 (2min), 03-01 (2min), 04-01 (2min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -70,6 +71,10 @@ Recent decisions affecting current work:
 - Screenshots save to .gamekit/screenshots/ (not Assets/) to avoid AssetDatabase.Refresh
 - Dual-mode response: binary PNG for --stdout, JSON file path for default
 - 30s timeout for screenshot requests (Camera.Render can be slow)
+- Static SceneService (no InitializeOnLoadMethod) -- no persistent state needed
+- FindGameObjectByPath walks Transform tree (not GameObject.Find) to support inactive objects
+- Scene open auto-saves dirty scenes before switching via EditorSceneManager.SaveOpenScenes()
+- Query param filtering pattern for GET endpoints (name/component/depth from QueryString)
 
 ### Pending Todos
 
@@ -83,5 +88,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 03-01-PLAN.md (Screenshot capture) -- Phase 3 complete
+Stopped at: Completed 04-01-PLAN.md (Scene & hierarchy inspection)
 Resume file: None
