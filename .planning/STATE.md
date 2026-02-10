@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Claude can write code, see the result, fix errors, and iterate on a Unity game through gamekit alone -- no MCP server, no third-party relay, no extra dependencies.
-**Current focus:** Phase 5: Scene Authoring
+**Current focus:** Phase 5: Scene Authoring (Complete)
 
 ## Current Position
 
-Phase: 5 of 7 (Scene Authoring)
-Plan: 1 of 2 in current phase
-Status: In Progress
-Last activity: 2026-02-10 -- Completed 05-01 (GameObject create/destroy/transform with undo)
+Phase: 5 of 7 (Scene Authoring) -- COMPLETE
+Plan: 2 of 2 in current phase
+Status: Phase Complete
+Last activity: 2026-02-10 -- Completed 05-02 (Component addition and property setting)
 
-Progress: [██████░░░░] 67%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: 2min
-- Total execution time: 0.37 hours
+- Total execution time: 0.42 hours
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [██████░░░░] 67%
 | 02-core-feedback-loop | 3 | 6min | 2min |
 | 03-visual-feedback | 1 | 2min | 2min |
 | 04-scene-inspection | 2 | 4min | 2min |
-| 05-scene-authoring | 1 | 3min | 3min |
+| 05-scene-authoring | 2 | 6min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (2min), 04-01 (2min), 04-02 (2min), 05-01 (3min)
+- Last 5 plans: 04-01 (2min), 04-02 (2min), 05-01 (3min), 05-02 (3min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -84,6 +84,9 @@ Recent decisions affecting current work:
 - SceneService.GetHierarchyPath changed from private to internal for cross-service reuse
 - ObjectFactory.CreateGameObject for auto-undo (instead of new GameObject + manual undo)
 - Clean up created object on parent-not-found before throwing (prevents orphaned objects)
+- PropertyDeserializer mirrors PropertySerializer with 18 type cases for round-trip fidelity
+- SetPropertyHandler uses ApplyModifiedProperties (not WithoutUndo) for automatic undo support
+- CLI set command parses comma-separated values into vector objects client-side
 
 ### Pending Todos
 
@@ -97,5 +100,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 05-01-PLAN.md (GameObject create/destroy/transform with undo)
+Stopped at: Completed 05-02-PLAN.md (Component addition and property setting -- Phase 5 complete)
 Resume file: None
