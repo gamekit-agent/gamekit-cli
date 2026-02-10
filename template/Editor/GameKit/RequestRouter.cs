@@ -40,6 +40,18 @@ namespace GameKit
                 {
                     response = ConsoleHandler.Handle(context.Request);
                 }
+                else if (method == "POST" && path == "/api/play/start")
+                {
+                    response = PlayHandler.HandleStart(context.Request);
+                }
+                else if (method == "POST" && path == "/api/play/stop")
+                {
+                    response = PlayHandler.HandleStop(context.Request);
+                }
+                else if (method == "GET" && path == "/api/play/status")
+                {
+                    response = PlayHandler.HandleStatus(context.Request);
+                }
                 else
                 {
                     statusCode = 404;
