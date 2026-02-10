@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Visual Feedback** - Screenshot capture from Game view, Scene view, and specific cameras
 - [x] **Phase 4: Scene Inspection** - Read-only scene understanding (hierarchy, components, properties)
 - [x] **Phase 5: Scene Authoring** - Create, modify, and delete GameObjects and components
-- [ ] **Phase 6: Project Context & Build** - Project queries, build automation, and test runner
+- [x] **Phase 6: Project Context & Build** - Project queries, build automation, and test runner
 - [ ] **Phase 7: Asset Management** - Prefabs, materials, and animation state queries
 
 ## Phase Details
@@ -114,9 +114,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 06-01-PLAN.md -- Project asset listing (scripts, scenes, prefabs) and settings query (layers, tags, physics, quality, input)
-- [ ] 06-02-PLAN.md -- Build trigger with BuildPipeline.BuildPlayer and structured build report
-- [ ] 06-03-PLAN.md -- Test runner integration with TestRunnerApi callbacks and polling
+- [x] 06-01-PLAN.md -- Project asset listing (scripts, scenes, prefabs) and settings query (layers, tags, physics, quality, input)
+- [x] 06-02-PLAN.md -- Build trigger with BuildPipeline.BuildPlayer and structured build report
+- [x] 06-03-PLAN.md -- Test runner integration with TestRunnerApi callbacks and polling
 
 ### Phase 7: Asset Management
 **Goal**: Claude can create and manage Unity assets -- prefabs, materials, and animation queries -- completing the full game development toolkit
@@ -146,5 +146,5 @@ Phases execute in numeric order. Phases 2, 3, 4, 6 depend only on Phase 1 and co
 | 3. Visual Feedback | 1/1 | Complete | 2026-02-10 |
 | 4. Scene Inspection | 2/2 | Complete | 2026-02-10 |
 | 5. Scene Authoring | 2/2 | Complete | 2026-02-10 |
-| 6. Project Context & Build | 0/3 | Not started | - |
+| 6. Project Context & Build | 3/3 | Complete | 2026-02-10 |
 | 7. Asset Management | 0/3 | Not started | - |
