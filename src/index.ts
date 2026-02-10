@@ -18,6 +18,7 @@ import { registerAddComponentCommand } from './commands/add-component.js';
 import { registerSetCommand } from './commands/set.js';
 import { registerListCommand } from './commands/list.js';
 import { registerSettingsCommand } from './commands/settings.js';
+import { registerBuildCommand } from './commands/build.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
 import { GameKitError } from './utils/connection.js';
 import { outputError } from './utils/output.js';
@@ -127,6 +128,9 @@ registerListCommand(program);
 
 // Settings - show project settings
 registerSettingsCommand(program);
+
+// Build - trigger Unity player build
+registerBuildCommand(program);
 
 // Show error for unknown commands
 program.on('command:*', (operands) => {
