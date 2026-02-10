@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 Phase: 2 of 7 (Core Feedback Loop)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing
-Last activity: 2026-02-10 -- Completed 02-01 (Refresh/Compile endpoint + CLI command)
+Last activity: 2026-02-10 -- Completed 02-02 (Console log buffer + SSE streaming)
 
-Progress: [███░░░░░░░] 19%
+Progress: [████░░░░░░] 24%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: 3min
-- Total execution time: 0.17 hours
+- Total plans completed: 5
+- Average duration: 2min
+- Total execution time: 0.20 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 8min | 3min |
-| 02-core-feedback-loop | 1 | 2min | 2min |
+| 02-core-feedback-loop | 2 | 4min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2min), 01-02 (2min), 01-03 (4min), 02-01 (2min)
+- Last 5 plans: 01-02 (2min), 01-03 (4min), 02-01 (2min), 02-02 (2min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -61,6 +61,9 @@ Recent decisions affecting current work:
 - CLI polls same POST /refresh endpoint when compilation is async (no separate status endpoint)
 - 60s timeout for refresh requests to handle large Unity projects
 - Service layer pattern: static classes in GameKit.Services with [InitializeOnLoadMethod]
+- SSE endpoint bypasses MainThreadDispatcher to avoid main-thread deadlock on long-lived connections
+- LogService listener notifications use lock+ToArray snapshot for concurrent SSE writes
+- Client-side severity filtering for SSE stream (server sends all, client filters)
 
 ### Pending Todos
 
@@ -74,5 +77,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 02-01-PLAN.md (Refresh/Compile endpoint + CLI command)
+Stopped at: Completed 02-02-PLAN.md (Console log buffer + SSE streaming)
 Resume file: None
