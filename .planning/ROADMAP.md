@@ -127,12 +127,12 @@ Plans:
   2. Running `gamekit material create`, `gamekit material set`, and `gamekit material assign` creates materials, sets their properties, and assigns them to renderers
   3. Running `gamekit animator list <path>` returns Animator controller states, parameters, and transitions
   4. Prefab operations support variants and overrides
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 07-01: Implement prefab create, instantiate, and variant support
-- [ ] 07-02: Implement material creation, property setting, and assignment
-- [ ] 07-03: Implement animator state query
+- [ ] 07-01-PLAN.md -- Prefab create, instantiate, and variant/override support (PrefabService + PrefabHandler + CLI)
+- [ ] 07-02-PLAN.md -- Material creation, property setting, and assignment (MaterialService + MaterialHandler + CLI)
+- [ ] 07-03-PLAN.md -- Animator controller state query (AnimatorService + AnimatorHandler + CLI)
 
 ## Progress
 
