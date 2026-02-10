@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Replace MCP with HTTP bridge infrastructure and establish CLI conventions
 - [x] **Phase 2: Core Feedback Loop** - Compilation, console logs, and play mode control
 - [x] **Phase 3: Visual Feedback** - Screenshot capture from Game view, Scene view, and specific cameras
-- [ ] **Phase 4: Scene Inspection** - Read-only scene understanding (hierarchy, components, properties)
+- [x] **Phase 4: Scene Inspection** - Read-only scene understanding (hierarchy, components, properties)
 - [ ] **Phase 5: Scene Authoring** - Create, modify, and delete GameObjects and components
 - [ ] **Phase 6: Project Context & Build** - Project queries, build automation, and test runner
 - [ ] **Phase 7: Asset Management** - Prefabs, materials, and animation state queries
@@ -83,8 +83,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Scene listing, scene opening, and hierarchy query (SceneService, SceneHandler, HierarchyHandler + CLI)
-- [ ] 04-02-PLAN.md — GameObject inspection and property serialization with filtering (PropertySerializer, InspectHandler + CLI)
+- [x] 04-01-PLAN.md — Scene listing, scene opening, and hierarchy query (SceneService, SceneHandler, HierarchyHandler + CLI)
+- [x] 04-02-PLAN.md — GameObject inspection and property serialization with filtering (PropertySerializer, InspectHandler + CLI)
 
 ### Phase 5: Scene Authoring
 **Goal**: Claude can build and modify Unity scenes programmatically -- creating GameObjects, adding components, setting properties, all undoable
@@ -144,7 +144,7 @@ Phases execute in numeric order. Phases 2, 3, 4, 6 depend only on Phase 1 and co
 | 1. Foundation | 3/3 | Complete | 2026-02-10 |
 | 2. Core Feedback Loop | 3/3 | Complete | 2026-02-10 |
 | 3. Visual Feedback | 1/1 | Complete | 2026-02-10 |
-| 4. Scene Inspection | 0/2 | Not started | - |
+| 4. Scene Inspection | 2/2 | Complete | 2026-02-10 |
 | 5. Scene Authoring | 0/2 | Not started | - |
 | 6. Project Context & Build | 0/3 | Not started | - |
 | 7. Asset Management | 0/3 | Not started | - |

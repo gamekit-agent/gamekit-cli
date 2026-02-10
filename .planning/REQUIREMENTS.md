@@ -54,11 +54,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Scene Inspection
 
-- [ ] **SINSP-01**: `gamekit scene list` lists all scenes in the project
-- [ ] **SINSP-02**: `gamekit scene open <name>` opens a scene by name or path
-- [ ] **SINSP-03**: `gamekit hierarchy` returns full scene hierarchy as JSON tree (GameObjects + parent/child)
-- [ ] **SINSP-04**: `gamekit inspect <path>` returns all components and their serialized properties on a GameObject
-- [ ] **SINSP-05**: Hierarchy and inspect support filtering by name or component type
+- [x] **SINSP-01**: `gamekit scene list` lists all scenes in the project
+- [x] **SINSP-02**: `gamekit scene open <name>` opens a scene by name or path
+- [x] **SINSP-03**: `gamekit hierarchy` returns full scene hierarchy as JSON tree (GameObjects + parent/child)
+- [x] **SINSP-04**: `gamekit inspect <path>` returns all components and their serialized properties on a GameObject
+- [x] **SINSP-05**: Hierarchy and inspect support filtering by name or component type
 
 ### Scene Authoring
 
