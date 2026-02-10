@@ -8,6 +8,8 @@ import { refresh } from './commands/refresh.js';
 import { consoleCommand } from './commands/console.js';
 import { registerPlayCommand } from './commands/play.js';
 import { registerScreenshotCommand } from './commands/screenshot.js';
+import { registerSceneCommand } from './commands/scene.js';
+import { registerHierarchyCommand } from './commands/hierarchy.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
 import { GameKitError } from './utils/connection.js';
 import { outputError } from './utils/output.js';
@@ -87,6 +89,12 @@ registerPlayCommand(program);
 
 // Screenshot - capture screenshots from Unity
 registerScreenshotCommand(program);
+
+// Scene - manage Unity scenes
+registerSceneCommand(program);
+
+// Hierarchy - inspect scene hierarchy
+registerHierarchyCommand(program);
 
 // Show error for unknown commands
 program.on('command:*', (operands) => {
