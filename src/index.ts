@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import { init } from './commands/init.js';
 import { runDoctor } from './commands/doctor.js';
 import { refresh } from './commands/refresh.js';
+import { consoleCommand } from './commands/console.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
 import { GameKitError } from './utils/connection.js';
 import { outputError } from './utils/output.js';
@@ -52,6 +53,25 @@ program
   .action(async () => {
     try {
       await refresh(program.opts());
+    } catch (error) {
+      if (error instanceof GameKitError) {
+        outputError(error.code, error.message);
+      }
+      throw error;
+    }
+  });
+
+// Console - read Unity console logs
+program
+  .command('console')
+  .description('Read Unity console logs')
+  .option('--errors', 'Show only errors')
+  .option('--warnings', 'Show only warnings')
+  .option('--info', 'Show only info messages')
+  .option('--follow', 'Stream logs in real-time')
+  .action(async (cmdOptions) => {
+    try {
+      await consoleCommand({ ...program.opts(), ...cmdOptions });
     } catch (error) {
       if (error instanceof GameKitError) {
         outputError(error.code, error.message);
