@@ -65,10 +65,10 @@ Plans:
   2. Running `gamekit screenshot --scene` captures the Scene view as a PNG file
   3. Running `gamekit screenshot --camera <name>` captures from a specific camera in the scene
   4. Screenshots can be piped to stdout as binary for direct consumption by tools
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 03-01: Implement screenshot capture (Game view, Scene view, named camera, output modes)
+- [ ] 03-01-PLAN.md — Screenshot capture (ScreenshotService, ScreenshotHandler, CLI command with Game/Scene/camera/binary modes)
 
 ### Phase 4: Scene Inspection
 **Goal**: Claude can understand what exists in a Unity scene -- the full hierarchy, every component, and all serialized property values
@@ -143,7 +143,7 @@ Phases execute in numeric order. Phases 2, 3, 4, 6 depend only on Phase 1 and co
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-02-10 |
 | 2. Core Feedback Loop | 3/3 | Complete | 2026-02-10 |
-| 3. Visual Feedback | 0/1 | Not started | - |
+| 3. Visual Feedback | 0/1 | Planned | - |
 | 4. Scene Inspection | 0/2 | Not started | - |
 | 5. Scene Authoring | 0/2 | Not started | - |
 | 6. Project Context & Build | 0/3 | Not started | - |
