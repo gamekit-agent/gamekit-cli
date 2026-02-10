@@ -7,7 +7,6 @@ import {
   parseUnityVersion,
   isUnity6OrNewer,
   getUnityExecutablePath,
-  getMcpPackageUrl,
   isUnityProject,
   UnityInstall
 } from '../../utils/unity.js';
@@ -99,43 +98,6 @@ describe('unity utilities', () => {
       expect(install.version).toBe('6000.1.12f1');
       expect(install.path).toBe('/path/to/unity');
       expect(install.isUnity6).toBe(true);
-    });
-  });
-
-  describe('getMcpPackageUrl', () => {
-    it('returns Unity6 path for Unity 6000.x', () => {
-      const url = getMcpPackageUrl('6000.1.12f1');
-      expect(url).toBe('https://github.com/codemaestroai/advanced-unity-mcp.git?path=Unity6');
-    });
-
-    it('returns Unity2020_2022 path for Unity 2022.x', () => {
-      const url = getMcpPackageUrl('2022.3.20f1');
-      expect(url).toBe('https://github.com/codemaestroai/advanced-unity-mcp.git?path=Unity2020_2022');
-    });
-
-    it('returns Unity2020_2022 path for Unity 2021.x', () => {
-      const url = getMcpPackageUrl('2021.3.0f1');
-      expect(url).toBe('https://github.com/codemaestroai/advanced-unity-mcp.git?path=Unity2020_2022');
-    });
-
-    it('returns Unity2020_2022 path for Unity 2020.x', () => {
-      const url = getMcpPackageUrl('2020.3.0f1');
-      expect(url).toBe('https://github.com/codemaestroai/advanced-unity-mcp.git?path=Unity2020_2022');
-    });
-
-    it('returns null for Unity 2019.x (unsupported)', () => {
-      const url = getMcpPackageUrl('2019.4.0f1');
-      expect(url).toBeNull();
-    });
-
-    it('returns null for Unity 2018.x (unsupported)', () => {
-      const url = getMcpPackageUrl('2018.4.0f1');
-      expect(url).toBeNull();
-    });
-
-    it('returns null for invalid version', () => {
-      const url = getMcpPackageUrl('invalid');
-      expect(url).toBeNull();
     });
   });
 

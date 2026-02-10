@@ -170,28 +170,6 @@ export function createUnityProject(
 }
 
 /**
- * Get the Unity MCP package URL based on the Unity version
- * Returns null for unsupported versions (2019 and older)
- */
-export function getMcpPackageUrl(version: string): string | null {
-  const parsed = parseUnityVersion(version);
-  if (!parsed) return null;
-
-  // Unity 6+ (version numbers starting with 6000)
-  if (parsed.major >= 6000) {
-    return 'https://github.com/codemaestroai/advanced-unity-mcp.git?path=Unity6';
-  }
-
-  // Unity 2020-2023
-  if (parsed.major >= 2020 && parsed.major <= 2023) {
-    return 'https://github.com/codemaestroai/advanced-unity-mcp.git?path=Unity2020_2022';
-  }
-
-  // Unity 2019 or older - not supported
-  return null;
-}
-
-/**
  * Check if a directory is a Unity project
  * A valid Unity project has Assets/ folder and Packages/manifest.json
  */
