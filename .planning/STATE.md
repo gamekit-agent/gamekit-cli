@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 Phase: 6 of 7 (Project Context Build)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing
-Last activity: 2026-02-10 -- Completed 06-01 (Project asset listing and settings)
+Last activity: 2026-02-10 -- Completed 06-02 (Build command)
 
-Progress: [████████░░] 83%
+Progress: [█████████░] 87%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: 2min
-- Total execution time: 0.45 hours
+- Total execution time: 0.48 hours
 
 **By Phase:**
 
@@ -32,10 +32,10 @@ Progress: [████████░░] 83%
 | 03-visual-feedback | 1 | 2min | 2min |
 | 04-scene-inspection | 2 | 4min | 2min |
 | 05-scene-authoring | 2 | 6min | 3min |
-| 06-project-context-build | 1 | 2min | 2min |
+| 06-project-context-build | 2 | 4min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (2min), 05-01 (3min), 05-02 (3min), 06-01 (2min)
+- Last 5 plans: 05-01 (3min), 05-02 (3min), 06-01 (2min), 06-02 (2min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -90,6 +90,9 @@ Recent decisions affecting current work:
 - CLI set command parses comma-separated values into vector objects client-side
 - Reuse existing /api/scene/list endpoint for list scenes subcommand (no duplication)
 - SerializedObject + try-catch for InputManager.asset (graceful fallback for new Input System)
+- Synchronous BuildPipeline.BuildPlayer with 600s CLI timeout for long builds
+- Platform aliases (win, mac, osx, linux64, etc.) mapped to BuildTarget enum
+- Directory-based output for WebGL/Linux/iOS, extension-based for Windows/Mac/Android
 
 ### Pending Todos
 
@@ -103,5 +106,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 06-01-PLAN.md (Project asset listing and settings)
+Stopped at: Completed 06-02-PLAN.md (Build command)
 Resume file: None
