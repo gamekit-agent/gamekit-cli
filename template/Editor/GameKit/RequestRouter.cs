@@ -120,9 +120,33 @@ namespace GameKit
                 {
                     response = TestHandler.HandleStatus(context.Request);
                 }
+                else if (method == "POST" && path == "/api/prefab/create")
+                {
+                    response = PrefabHandler.HandleCreate(context.Request);
+                }
+                else if (method == "POST" && path == "/api/prefab/instantiate")
+                {
+                    response = PrefabHandler.HandleInstantiate(context.Request);
+                }
+                else if (method == "GET" && path == "/api/prefab/overrides")
+                {
+                    response = PrefabHandler.HandleOverrides(context.Request);
+                }
                 else if (method == "GET" && path == "/api/animator/list")
                 {
                     response = AnimatorHandler.HandleList(context.Request);
+                }
+                else if (method == "POST" && path == "/api/material/create")
+                {
+                    response = MaterialHandler.HandleCreate(context.Request);
+                }
+                else if (method == "POST" && path == "/api/material/set")
+                {
+                    response = MaterialHandler.HandleSet(context.Request);
+                }
+                else if (method == "POST" && path == "/api/material/assign")
+                {
+                    response = MaterialHandler.HandleAssign(context.Request);
                 }
                 else
                 {
