@@ -108,6 +108,10 @@ namespace GameKit
                 {
                     response = SettingsHandler.Handle(context.Request);
                 }
+                else if (method == "POST" && path == "/api/build")
+                {
+                    response = BuildHandler.Handle(context.Request);
+                }
                 else
                 {
                     statusCode = 404;
