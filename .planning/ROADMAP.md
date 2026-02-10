@@ -80,11 +80,11 @@ Plans:
   3. Running `gamekit hierarchy` returns the full scene hierarchy as a JSON tree showing parent/child relationships
   4. Running `gamekit inspect <path>` returns all components on a GameObject with their serialized property values
   5. Hierarchy and inspect commands support filtering by name or component type
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: Implement scene list, scene open, and hierarchy query
-- [ ] 04-02: Implement GameObject inspection and property serialization with filtering
+- [ ] 04-01-PLAN.md — Scene listing, scene opening, and hierarchy query (SceneService, SceneHandler, HierarchyHandler + CLI)
+- [ ] 04-02-PLAN.md — GameObject inspection and property serialization with filtering (PropertySerializer, InspectHandler + CLI)
 
 ### Phase 5: Scene Authoring
 **Goal**: Claude can build and modify Unity scenes programmatically -- creating GameObjects, adding components, setting properties, all undoable
