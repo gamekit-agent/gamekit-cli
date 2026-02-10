@@ -102,6 +102,9 @@ Recent decisions affecting current work:
 - Default connect=true for prefab create (SaveAsPrefabAssetAndConnect matches standard Unity workflow)
 - Commander --no-connect pattern for boolean opt-out of prefab connection
 - GET with query param for overrides (read-only, matches hierarchy/inspect pattern)
+- Color fallback keys: Unity SetProperty reads value['r'] first, falls back to value['x'] so CLI sends x/y/z/w for all vector types
+- Asset persistence via EditorUtility.SetDirty + AssetDatabase.SaveAssets (not Undo) for material property changes
+- renderer.sharedMaterial for editor-safe assignment (not .material which creates runtime copies)
 
 ### Pending Todos
 
@@ -115,5 +118,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 07-01-PLAN.md (Prefab operations) -- Phase 7 complete
+Stopped at: Completed 07-02-PLAN.md (Material management)
 Resume file: None
