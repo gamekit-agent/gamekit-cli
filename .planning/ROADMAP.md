@@ -13,7 +13,7 @@ This roadmap transforms gamekit from an MCP relay wrapper into a standalone Unit
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Replace MCP with HTTP bridge infrastructure and establish CLI conventions
-- [ ] **Phase 2: Core Feedback Loop** - Compilation, console logs, and play mode control
+- [x] **Phase 2: Core Feedback Loop** - Compilation, console logs, and play mode control
 - [ ] **Phase 3: Visual Feedback** - Screenshot capture from Game view, Scene view, and specific cameras
 - [ ] **Phase 4: Scene Inspection** - Read-only scene understanding (hierarchy, components, properties)
 - [ ] **Phase 5: Scene Authoring** - Create, modify, and delete GameObjects and components
@@ -52,9 +52,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Refresh/compile handler and CLI command (CompilationService, RefreshHandler, gamekit refresh)
-- [ ] 02-02-PLAN.md — Console log buffer, filtering, and SSE streaming (LogService, ConsoleHandler, gamekit console --follow)
-- [ ] 02-03-PLAN.md — Play mode control (PlayHandler, gamekit play start/stop/status)
+- [x] 02-01-PLAN.md — Refresh/compile handler and CLI command (CompilationService, RefreshHandler, gamekit refresh)
+- [x] 02-02-PLAN.md — Console log buffer, filtering, and SSE streaming (LogService, ConsoleHandler, gamekit console --follow)
+- [x] 02-03-PLAN.md — Play mode control (PlayHandler, gamekit play start/stop/status)
 
 ### Phase 3: Visual Feedback
 **Goal**: Claude can see what the game looks like by capturing screenshots from the Unity Editor
@@ -142,7 +142,7 @@ Phases execute in numeric order. Phases 2, 3, 4, 6 depend only on Phase 1 and co
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-02-10 |
-| 2. Core Feedback Loop | 0/3 | Not started | - |
+| 2. Core Feedback Loop | 3/3 | Complete | 2026-02-10 |
 | 3. Visual Feedback | 0/1 | Not started | - |
 | 4. Scene Inspection | 0/2 | Not started | - |
 | 5. Scene Authoring | 0/2 | Not started | - |
