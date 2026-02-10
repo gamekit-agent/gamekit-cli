@@ -11,6 +11,9 @@ import { registerScreenshotCommand } from './commands/screenshot.js';
 import { registerSceneCommand } from './commands/scene.js';
 import { registerHierarchyCommand } from './commands/hierarchy.js';
 import { registerInspectCommand } from './commands/inspect.js';
+import { registerCreateCommand } from './commands/create.js';
+import { registerDestroyCommand } from './commands/destroy.js';
+import { registerTransformCommand } from './commands/transform.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
 import { GameKitError } from './utils/connection.js';
 import { outputError } from './utils/output.js';
@@ -99,6 +102,15 @@ registerHierarchyCommand(program);
 
 // Inspect - inspect GameObject properties
 registerInspectCommand(program);
+
+// Create - create GameObjects in the scene
+registerCreateCommand(program);
+
+// Destroy - remove GameObjects from the scene
+registerDestroyCommand(program);
+
+// Transform - set position, rotation, scale on GameObjects
+registerTransformCommand(program);
 
 // Show error for unknown commands
 program.on('command:*', (operands) => {
