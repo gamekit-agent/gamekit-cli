@@ -32,12 +32,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. The Unity plugin starts automatically when Unity opens the project, survives script recompilation, and writes a discoverable port file
   4. All gamekit commands output clean JSON to stdout and human-readable output to stderr in TTY mode, with consistent error formatting
   5. When Unity is not running or the plugin is unresponsive, gamekit commands fail with a clear error message and non-zero exit code
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Strip MCP code and update init/doctor commands
-- [ ] 01-02: Build Unity Editor plugin (HTTP server, main thread dispatch, domain reload survival)
-- [ ] 01-03: Build CLI connection layer (discovery, health check, bridge client, output formatting)
+- [ ] 01-01-PLAN.md — Build Unity Editor plugin (C# HTTP server, main thread dispatch, domain reload survival, port management)
+- [ ] 01-02-PLAN.md — Build CLI connection layer (discovery, health check, bridge client, output formatting)
+- [ ] 01-03-PLAN.md — Strip MCP code and update init/doctor commands
 
 ### Phase 2: Core Feedback Loop
 **Goal**: Claude can write code, trigger compilation, read errors, enter play mode, and read runtime logs -- the primary development loop works end-to-end through gamekit
