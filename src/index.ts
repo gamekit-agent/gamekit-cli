@@ -4,7 +4,10 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import { init } from './commands/init.js';
 import { runDoctor } from './commands/doctor.js';
+import { refresh } from './commands/refresh.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
+import { GameKitError } from './utils/connection.js';
+import { outputError } from './utils/output.js';
 
 // Check if an update was applied in the background
 const updatedVersion = checkForAppliedUpdate();
@@ -41,6 +44,21 @@ program
   .command('doctor')
   .description('Diagnose setup issues and check configuration')
   .action(runDoctor);
+
+// Refresh - trigger Unity recompilation
+program
+  .command('refresh')
+  .description('Trigger Unity recompilation and return results')
+  .action(async () => {
+    try {
+      await refresh(program.opts());
+    } catch (error) {
+      if (error instanceof GameKitError) {
+        outputError(error.code, error.message);
+      }
+      throw error;
+    }
+  });
 
 // Show error for unknown commands
 program.on('command:*', (operands) => {
