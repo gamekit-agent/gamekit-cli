@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 ## Current Position
 
 Phase: 1 of 7 (Foundation)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing
-Last activity: 2026-02-10 -- Completed 01-01 (Unity Editor HTTP plugin)
+Last activity: 2026-02-10 -- Completed 01-02 (CLI connection & output layer)
 
-Progress: [█░░░░░░░░░] 5%
+Progress: [██░░░░░░░░] 10%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
+- Total plans completed: 2
 - Average duration: 2min
-- Total execution time: 0.03 hours
+- Total execution time: 0.07 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation | 1 | 2min | 2min |
+| 01-foundation | 2 | 4min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2min)
-- Trend: Starting
+- Last 5 plans: 01-01 (2min), 01-02 (2min)
+- Trend: Consistent
 
 *Updated after each plan completion*
 
@@ -49,6 +49,10 @@ Recent decisions affecting current work:
 - Port range 17580-17589 with port file at .gamekit/server.json for multi-instance coexistence
 - Full request-response cycle on main thread via MainThreadDispatcher.Invoke()
 - Newtonsoft.Json with [JsonProperty] attributes for lowercase JSON field names
+- fetch API for HTTP client (Bun built-in, simpler than Node http module)
+- GameKitError(code, message) pattern for all CLI-facing errors
+- JSON to stdout (machine) + human-readable to stderr (TTY only) output pattern
+- outputError exits process (never returns) -- commands catch GameKitError for recovery
 
 ### Pending Todos
 
@@ -62,5 +66,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 01-01-PLAN.md (Unity Editor HTTP plugin)
+Stopped at: Completed 01-02-PLAN.md (CLI connection & output layer)
 Resume file: None
