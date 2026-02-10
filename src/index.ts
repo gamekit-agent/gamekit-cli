@@ -14,6 +14,8 @@ import { registerInspectCommand } from './commands/inspect.js';
 import { registerCreateCommand } from './commands/create.js';
 import { registerDestroyCommand } from './commands/destroy.js';
 import { registerTransformCommand } from './commands/transform.js';
+import { registerAddComponentCommand } from './commands/add-component.js';
+import { registerSetCommand } from './commands/set.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
 import { GameKitError } from './utils/connection.js';
 import { outputError } from './utils/output.js';
@@ -111,6 +113,12 @@ registerDestroyCommand(program);
 
 // Transform - set position, rotation, scale on GameObjects
 registerTransformCommand(program);
+
+// Add Component - add components to GameObjects
+registerAddComponentCommand(program);
+
+// Set - set property values on components
+registerSetCommand(program);
 
 // Show error for unknown commands
 program.on('command:*', (operands) => {
