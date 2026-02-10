@@ -6,6 +6,7 @@ import { init } from './commands/init.js';
 import { runDoctor } from './commands/doctor.js';
 import { refresh } from './commands/refresh.js';
 import { consoleCommand } from './commands/console.js';
+import { registerPlayCommand } from './commands/play.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
 import { GameKitError } from './utils/connection.js';
 import { outputError } from './utils/output.js';
@@ -79,6 +80,9 @@ program
       throw error;
     }
   });
+
+// Play - control Unity play mode
+registerPlayCommand(program);
 
 // Show error for unknown commands
 program.on('command:*', (operands) => {
