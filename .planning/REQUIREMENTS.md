@@ -139,72 +139,72 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MCP-01 | TBD | Pending |
-| MCP-02 | TBD | Pending |
-| MCP-03 | TBD | Pending |
-| MCP-04 | TBD | Pending |
-| CONN-01 | TBD | Pending |
-| CONN-02 | TBD | Pending |
-| CONN-03 | TBD | Pending |
-| CONN-04 | TBD | Pending |
-| CONN-05 | TBD | Pending |
-| CONN-06 | TBD | Pending |
-| CONN-07 | TBD | Pending |
-| COMP-01 | TBD | Pending |
-| COMP-02 | TBD | Pending |
-| COMP-03 | TBD | Pending |
-| LOG-01 | TBD | Pending |
-| LOG-02 | TBD | Pending |
-| LOG-03 | TBD | Pending |
-| LOG-04 | TBD | Pending |
-| LOG-05 | TBD | Pending |
-| VIS-01 | TBD | Pending |
-| VIS-02 | TBD | Pending |
-| VIS-03 | TBD | Pending |
-| VIS-04 | TBD | Pending |
-| PLAY-01 | TBD | Pending |
-| PLAY-02 | TBD | Pending |
-| PLAY-03 | TBD | Pending |
-| PLAY-04 | TBD | Pending |
-| SINSP-01 | TBD | Pending |
-| SINSP-02 | TBD | Pending |
-| SINSP-03 | TBD | Pending |
-| SINSP-04 | TBD | Pending |
-| SINSP-05 | TBD | Pending |
-| SAUTH-01 | TBD | Pending |
-| SAUTH-02 | TBD | Pending |
-| SAUTH-03 | TBD | Pending |
-| SAUTH-04 | TBD | Pending |
-| SAUTH-05 | TBD | Pending |
-| SAUTH-06 | TBD | Pending |
-| SAUTH-07 | TBD | Pending |
-| SAUTH-08 | TBD | Pending |
-| PROJ-01 | TBD | Pending |
-| PROJ-02 | TBD | Pending |
-| PROJ-03 | TBD | Pending |
-| PROJ-04 | TBD | Pending |
-| PROJ-05 | TBD | Pending |
-| PROJ-06 | TBD | Pending |
-| PROJ-07 | TBD | Pending |
-| PROJ-08 | TBD | Pending |
-| ASSET-01 | TBD | Pending |
-| ASSET-02 | TBD | Pending |
-| ASSET-03 | TBD | Pending |
-| ASSET-04 | TBD | Pending |
-| ASSET-05 | TBD | Pending |
-| ASSET-06 | TBD | Pending |
-| ASSET-07 | TBD | Pending |
-| CLI-01 | TBD | Pending |
-| CLI-02 | TBD | Pending |
-| CLI-03 | TBD | Pending |
-| CLI-04 | TBD | Pending |
-| CLI-05 | TBD | Pending |
+| MCP-01 | Phase 1 | Pending |
+| MCP-02 | Phase 1 | Pending |
+| MCP-03 | Phase 1 | Pending |
+| MCP-04 | Phase 1 | Pending |
+| CONN-01 | Phase 1 | Pending |
+| CONN-02 | Phase 1 | Pending |
+| CONN-03 | Phase 1 | Pending |
+| CONN-04 | Phase 1 | Pending |
+| CONN-05 | Phase 1 | Pending |
+| CONN-06 | Phase 1 | Pending |
+| CONN-07 | Phase 1 | Pending |
+| COMP-01 | Phase 2 | Pending |
+| COMP-02 | Phase 2 | Pending |
+| COMP-03 | Phase 2 | Pending |
+| LOG-01 | Phase 2 | Pending |
+| LOG-02 | Phase 2 | Pending |
+| LOG-03 | Phase 2 | Pending |
+| LOG-04 | Phase 2 | Pending |
+| LOG-05 | Phase 2 | Pending |
+| PLAY-01 | Phase 2 | Pending |
+| PLAY-02 | Phase 2 | Pending |
+| PLAY-03 | Phase 2 | Pending |
+| PLAY-04 | Phase 2 | Pending |
+| VIS-01 | Phase 3 | Pending |
+| VIS-02 | Phase 3 | Pending |
+| VIS-03 | Phase 3 | Pending |
+| VIS-04 | Phase 3 | Pending |
+| SINSP-01 | Phase 4 | Pending |
+| SINSP-02 | Phase 4 | Pending |
+| SINSP-03 | Phase 4 | Pending |
+| SINSP-04 | Phase 4 | Pending |
+| SINSP-05 | Phase 4 | Pending |
+| SAUTH-01 | Phase 5 | Pending |
+| SAUTH-02 | Phase 5 | Pending |
+| SAUTH-03 | Phase 5 | Pending |
+| SAUTH-04 | Phase 5 | Pending |
+| SAUTH-05 | Phase 5 | Pending |
+| SAUTH-06 | Phase 5 | Pending |
+| SAUTH-07 | Phase 5 | Pending |
+| SAUTH-08 | Phase 5 | Pending |
+| PROJ-01 | Phase 6 | Pending |
+| PROJ-02 | Phase 6 | Pending |
+| PROJ-03 | Phase 6 | Pending |
+| PROJ-04 | Phase 6 | Pending |
+| PROJ-05 | Phase 6 | Pending |
+| PROJ-06 | Phase 6 | Pending |
+| PROJ-07 | Phase 6 | Pending |
+| PROJ-08 | Phase 6 | Pending |
+| ASSET-01 | Phase 7 | Pending |
+| ASSET-02 | Phase 7 | Pending |
+| ASSET-03 | Phase 7 | Pending |
+| ASSET-04 | Phase 7 | Pending |
+| ASSET-05 | Phase 7 | Pending |
+| ASSET-06 | Phase 7 | Pending |
+| ASSET-07 | Phase 7 | Pending |
+| CLI-01 | Phase 1 | Pending |
+| CLI-02 | Phase 1 | Pending |
+| CLI-03 | Phase 1 | Pending |
+| CLI-04 | Phase 1 | Pending |
+| CLI-05 | Phase 1 | Pending |
 
 **Coverage:**
-- v1 requirements: 55 total
-- Mapped to phases: 0
-- Unmapped: 55
+- v1 requirements: 60 total
+- Mapped to phases: 60
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-09*
-*Last updated: 2026-02-09 after initial definition*
+*Last updated: 2026-02-09 after roadmap creation*
