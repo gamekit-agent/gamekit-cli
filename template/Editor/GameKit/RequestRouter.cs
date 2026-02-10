@@ -60,6 +60,18 @@ namespace GameKit
                 {
                     response = PlayHandler.HandleStatus(context.Request);
                 }
+                else if (method == "GET" && path == "/api/scene/list")
+                {
+                    response = SceneHandler.HandleList(context.Request);
+                }
+                else if (method == "POST" && path == "/api/scene/open")
+                {
+                    response = SceneHandler.HandleOpen(context.Request);
+                }
+                else if (method == "GET" && path == "/api/hierarchy")
+                {
+                    response = HierarchyHandler.Handle(context.Request);
+                }
                 else
                 {
                     statusCode = 404;
