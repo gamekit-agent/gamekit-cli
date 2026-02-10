@@ -88,6 +88,14 @@ namespace GameKit
                 {
                     response = TransformHandler.Handle(context.Request);
                 }
+                else if (method == "POST" && path == "/api/add-component")
+                {
+                    response = AddComponentHandler.Handle(context.Request);
+                }
+                else if (method == "POST" && path == "/api/set")
+                {
+                    response = SetPropertyHandler.Handle(context.Request);
+                }
                 else
                 {
                     statusCode = 404;
