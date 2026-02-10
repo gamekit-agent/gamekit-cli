@@ -20,6 +20,7 @@ import { registerListCommand } from './commands/list.js';
 import { registerSettingsCommand } from './commands/settings.js';
 import { registerBuildCommand } from './commands/build.js';
 import { registerTestCommand } from './commands/test.js';
+import { registerAnimatorCommand } from './commands/animator.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
 import { GameKitError } from './utils/connection.js';
 import { outputError } from './utils/output.js';
@@ -135,6 +136,9 @@ registerBuildCommand(program);
 
 // Test - run Unity Test Framework tests
 registerTestCommand(program);
+
+// Animator - query Animator controllers
+registerAnimatorCommand(program);
 
 // Show error for unknown commands
 program.on('command:*', (operands) => {
