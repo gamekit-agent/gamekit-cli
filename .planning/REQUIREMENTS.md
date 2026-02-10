@@ -62,14 +62,14 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Scene Authoring
 
-- [ ] **SAUTH-01**: `gamekit create <name>` creates a new empty GameObject in the scene
-- [ ] **SAUTH-02**: `gamekit create <name> --parent <path>` creates GameObject under a specific parent
-- [ ] **SAUTH-03**: `gamekit add-component <path> <type>` adds a component to a GameObject
-- [ ] **SAUTH-04**: `gamekit set <path> <component> <property> <value>` sets a serialized property on a component
-- [ ] **SAUTH-05**: `gamekit destroy <path>` removes a GameObject from the scene
-- [ ] **SAUTH-06**: `gamekit transform <path> --position x,y,z --rotation x,y,z --scale x,y,z` sets transform
-- [ ] **SAUTH-07**: All scene write operations go through Unity's Undo system (Ctrl+Z reverts)
-- [ ] **SAUTH-08**: Property setting supports core Unity types (Vector3, Color, bool, int, float, string, enum, object references)
+- [x] **SAUTH-01**: `gamekit create <name>` creates a new empty GameObject in the scene
+- [x] **SAUTH-02**: `gamekit create <name> --parent <path>` creates GameObject under a specific parent
+- [x] **SAUTH-03**: `gamekit add-component <path> <type>` adds a component to a GameObject
+- [x] **SAUTH-04**: `gamekit set <path> <component> <property> <value>` sets a serialized property on a component
+- [x] **SAUTH-05**: `gamekit destroy <path>` removes a GameObject from the scene
+- [x] **SAUTH-06**: `gamekit transform <path> --position x,y,z --rotation x,y,z --scale x,y,z` sets transform
+- [x] **SAUTH-07**: All scene write operations go through Unity's Undo system (Ctrl+Z reverts)
+- [x] **SAUTH-08**: Property setting supports core Unity types (Vector3, Color, bool, int, float, string, enum, object references)
 
 ### Project Context
 

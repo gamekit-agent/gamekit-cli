@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Core Feedback Loop** - Compilation, console logs, and play mode control
 - [x] **Phase 3: Visual Feedback** - Screenshot capture from Game view, Scene view, and specific cameras
 - [x] **Phase 4: Scene Inspection** - Read-only scene understanding (hierarchy, components, properties)
-- [ ] **Phase 5: Scene Authoring** - Create, modify, and delete GameObjects and components
+- [x] **Phase 5: Scene Authoring** - Create, modify, and delete GameObjects and components
 - [ ] **Phase 6: Project Context & Build** - Project queries, build automation, and test runner
 - [ ] **Phase 7: Asset Management** - Prefabs, materials, and animation state queries
 
@@ -99,8 +99,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Create/destroy GameObjects, transform manipulation, AuthoringService + TypeResolver
-- [ ] 05-02-PLAN.md — Add components, set properties with PropertyDeserializer, complete scene authoring CLI
+- [x] 05-01-PLAN.md — Create/destroy GameObjects, transform manipulation, AuthoringService + TypeResolver
+- [x] 05-02-PLAN.md — Add components, set properties with PropertyDeserializer, complete scene authoring CLI
 
 ### Phase 6: Project Context & Build
 **Goal**: Claude can query project structure, read settings, trigger builds, and run tests without leaving the CLI
@@ -145,6 +145,6 @@ Phases execute in numeric order. Phases 2, 3, 4, 6 depend only on Phase 1 and co
 | 2. Core Feedback Loop | 3/3 | Complete | 2026-02-10 |
 | 3. Visual Feedback | 1/1 | Complete | 2026-02-10 |
 | 4. Scene Inspection | 2/2 | Complete | 2026-02-10 |
-| 5. Scene Authoring | 0/2 | Planned | - |
+| 5. Scene Authoring | 2/2 | Complete | 2026-02-10 |
 | 6. Project Context & Build | 0/3 | Not started | - |
 | 7. Asset Management | 0/3 | Not started | - |
