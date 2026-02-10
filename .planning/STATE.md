@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-09)
 
 **Core value:** Claude can write code, see the result, fix errors, and iterate on a Unity game through gamekit alone -- no MCP server, no third-party relay, no extra dependencies.
-**Current focus:** Phase 5: Scene Authoring (Complete)
+**Current focus:** Phase 6: Project Context Build
 
 ## Current Position
 
-Phase: 5 of 7 (Scene Authoring) -- COMPLETE
-Plan: 2 of 2 in current phase
-Status: Phase Complete
-Last activity: 2026-02-10 -- Completed 05-02 (Component addition and property setting)
+Phase: 6 of 7 (Project Context Build)
+Plan: 1 of 3 in current phase
+Status: Executing
+Last activity: 2026-02-10 -- Completed 06-01 (Project asset listing and settings)
 
-Progress: [████████░░] 80%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 2min
-- Total execution time: 0.42 hours
+- Total execution time: 0.45 hours
 
 **By Phase:**
 
@@ -32,9 +32,10 @@ Progress: [████████░░] 80%
 | 03-visual-feedback | 1 | 2min | 2min |
 | 04-scene-inspection | 2 | 4min | 2min |
 | 05-scene-authoring | 2 | 6min | 3min |
+| 06-project-context-build | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (2min), 04-02 (2min), 05-01 (3min), 05-02 (3min)
+- Last 5 plans: 04-02 (2min), 05-01 (3min), 05-02 (3min), 06-01 (2min)
 - Trend: Consistent
 
 *Updated after each plan completion*
@@ -87,6 +88,8 @@ Recent decisions affecting current work:
 - PropertyDeserializer mirrors PropertySerializer with 18 type cases for round-trip fidelity
 - SetPropertyHandler uses ApplyModifiedProperties (not WithoutUndo) for automatic undo support
 - CLI set command parses comma-separated values into vector objects client-side
+- Reuse existing /api/scene/list endpoint for list scenes subcommand (no duplication)
+- SerializedObject + try-catch for InputManager.asset (graceful fallback for new Input System)
 
 ### Pending Todos
 
@@ -100,5 +103,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 05-02-PLAN.md (Component addition and property setting -- Phase 5 complete)
+Stopped at: Completed 06-01-PLAN.md (Project asset listing and settings)
 Resume file: None
