@@ -7,6 +7,7 @@ import { runDoctor } from './commands/doctor.js';
 import { refresh } from './commands/refresh.js';
 import { consoleCommand } from './commands/console.js';
 import { registerPlayCommand } from './commands/play.js';
+import { registerScreenshotCommand } from './commands/screenshot.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
 import { GameKitError } from './utils/connection.js';
 import { outputError } from './utils/output.js';
@@ -83,6 +84,9 @@ program
 
 // Play - control Unity play mode
 registerPlayCommand(program);
+
+// Screenshot - capture screenshots from Unity
+registerScreenshotCommand(program);
 
 // Show error for unknown commands
 program.on('command:*', (operands) => {
