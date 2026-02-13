@@ -1,12 +1,95 @@
 using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Newtonsoft.Json.Linq;
 
 namespace GameKit.Utils
 {
     public static class PropertyDeserializer
     {
+        /// <summary>
+        /// Get the System.Type for a SerializedProperty's objectReferenceValue field type.
+        /// Uses reflection on the target object to determine the declared field type.
+        /// </summary>
+        private static System.Type GetObjectReferenceType(SerializedProperty prop)
+        {
+            var targetObject = prop.serializedObject.targetObject;
+            if (targetObject == null) return typeof(UnityEngine.Object);
+
+            // Walk the type hierarchy to find private fields declared in base classes
+            var type = targetObject.GetType();
+            while (type != null)
+            {
+                var fieldInfo = type.GetField(prop.name,
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+                if (fieldInfo != null) return fieldInfo.FieldType;
+                type = type.BaseType;
+            }
+            return typeof(UnityEngine.Object);
+        }
+
+        private static GameObject FindByNameRecursive(Transform parent, string name)
+        {
+            if (parent.gameObject.name == name) return parent.gameObject;
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                var result = FindByNameRecursive(parent.GetChild(i), name);
+                if (result != null) return result;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Try to resolve a string value as a scene object reference.
+        /// Finds the GameObject by name/path and returns the appropriate component
+        /// based on the property's declared type.
+        /// </summary>
+        private static UnityEngine.Object ResolveSceneReference(string value, SerializedProperty prop)
+        {
+            // Search by path first, then by name across all root objects
+            GameObject go = null;
+
+            var scene = SceneManager.GetActiveScene();
+            var rootObjects = scene.GetRootGameObjects();
+
+            // Try exact path match
+            if (value.Contains("/"))
+            {
+                go = GameKit.Services.SceneService.FindGameObjectByPath(value);
+            }
+
+            // Try name match across entire hierarchy (recursive)
+            if (go == null)
+            {
+                foreach (var root in rootObjects)
+                {
+                    go = FindByNameRecursive(root.transform, value);
+                    if (go != null) break;
+                }
+            }
+
+            if (go == null) return null;
+
+            var expectedType = GetObjectReferenceType(prop);
+
+            // If the field expects a GameObject, return it directly
+            if (expectedType == typeof(GameObject))
+                return go;
+
+            // If the field expects Transform, return it
+            if (expectedType == typeof(Transform))
+                return go.transform;
+
+            // If the field expects a Component subclass, find it on the GameObject
+            if (typeof(Component).IsAssignableFrom(expectedType))
+                return go.GetComponent(expectedType);
+
+            // Fallback: return the GameObject itself
+            return go;
+        }
+
         public static void WriteValue(SerializedProperty prop, JToken value)
         {
             switch (prop.propertyType)
@@ -171,9 +254,18 @@ namespace GameKit.Utils
                     }
                     else if (value.Type == JTokenType.String)
                     {
-                        var assetPath = value.Value<string>();
-                        prop.objectReferenceValue =
-                            AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+                        var str = value.Value<string>();
+                        // Try as asset path first
+                        var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(str);
+                        if (asset != null)
+                        {
+                            prop.objectReferenceValue = asset;
+                        }
+                        else
+                        {
+                            // Fall back to scene object lookup by name/path
+                            prop.objectReferenceValue = ResolveSceneReference(str, prop);
+                        }
                     }
                     break;
 
