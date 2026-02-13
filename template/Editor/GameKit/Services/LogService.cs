@@ -91,6 +91,8 @@ namespace GameKit.Services
                 entries.Add(entry);
             }
 
+            int filteredCount = entries.Count;
+
             // When limit is set, return only the most recent N entries
             if (limit > 0 && entries.Count > limit)
             {
@@ -103,6 +105,7 @@ namespace GameKit.Services
             {
                 entries = entries,
                 totalCount = _totalCount,
+                filteredCount = filteredCount,
                 droppedCount = droppedCount
             };
         }
@@ -138,6 +141,7 @@ namespace GameKit.Services
     {
         public List<LogEntry> entries;
         public int totalCount;
+        public int filteredCount;
         public int droppedCount;
     }
 }

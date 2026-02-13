@@ -23,6 +23,7 @@ namespace GameKit.Handlers
             {
                 entries = result.entries,
                 totalCount = result.totalCount,
+                filteredCount = result.filteredCount,
                 droppedCount = result.droppedCount
             });
         }
