@@ -20,48 +20,33 @@ Examples:
 
 1. Understand target platform from user request
 2. Check if scenes are in build settings
-3. Configure build settings
-4. Start the build
-5. Tell user where to find the built game
+3. Start the build
+4. Tell user where to find the built game
 
 ## Platform Names
 
-| User says | Platform to use |
-|-----------|-----------------|
-| windows, pc, win | StandaloneWindows64 |
-| mac, macos, osx | StandaloneOSX |
-| linux | StandaloneLinux64 |
-| webgl, browser, web | WebGL |
-| android | Android |
-| ios, iphone | iOS |
+| User says | Platform flag |
+|-----------|--------------|
+| windows, pc, win | `--platform windows` |
+| mac, macos, osx | `--platform mac` |
+| linux | `--platform linux` |
+| webgl, browser, web | `--platform webgl` |
+| android | `--platform android` |
+| ios, iphone | `--platform ios` |
 
 ## Build Process
 
 ### 1. Check Scenes
+```bash
+gamekit list scenes
 ```
-manage_build action="list_scenes"
-```
-Make sure at least one scene is in build settings. If none:
-- Add the current scene to build settings
+Make sure at least one scene exists. If none, note the issue.
 
-### 2. Set Platform (if needed)
-```
-manage_platform action="get_current"
-manage_platform action="switch" platform="StandaloneWindows64"
-```
-
-### 3. Configure Build
-```
-manage_build action="set_dev_mode" dev_mode=false  // For release
-// or dev_mode=true for debugging
-```
-
-### 4. Build
-```
-manage_build action="build"
-  build_path="/path/to/Builds"
-  build_filename="MyGame.exe"  // or .app, etc.
-  build_autorun=true  // Opens game after build
+### 2. Build
+```bash
+gamekit build --platform windows
+# Or specify output path:
+gamekit build --platform windows --output Builds/Windows/
 ```
 
 ## Build Locations
@@ -74,11 +59,10 @@ Suggest putting builds in a `Builds/` folder:
 ## Common Issues
 
 **No scenes in build**
-- Add scenes using manage_build action="add_scene"
+- Ensure scenes exist in the project
 
 **Platform not installed**
 - User needs to install platform module in Unity Hub
-- Check with manage_platform action="list_installed"
 
 **Build errors**
 - Check console for compile errors

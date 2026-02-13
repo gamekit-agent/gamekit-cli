@@ -19,7 +19,7 @@ Examples:
 1. Read the user's problem description above
 2. If no description provided, ask: "What's happening? What did you expect vs what you see?"
 3. Investigate the specific issue:
-   - Use Unity MCP to check Console for errors
+   - Run `gamekit console --errors` to check for errors
    - Check relevant scripts and components
    - Look at Inspector settings
 

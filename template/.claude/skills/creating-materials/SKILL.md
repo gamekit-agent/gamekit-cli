@@ -23,72 +23,63 @@ Apply materials when:
 
 ## Implementation
 
-### Creating Materials via MCP
+### Creating Materials
+```bash
+gamekit material create MyMaterial
+# Creates Assets/Materials/MyMaterial.mat with Standard shader
+
+gamekit material create GlassMat --shader "Standard"
+# Specify shader explicitly
 ```
-manage_asset action="create"
-  path="Assets/Materials/MyMaterial.mat"
-  asset_type="Material"
-  properties={"color": [R, G, B, A]}
+
+### Setting Material Properties
+```bash
+gamekit material set Assets/Materials/MyMaterial.mat _Color 1,0.2,0.2,1
+gamekit material set Assets/Materials/MyMaterial.mat _Metallic 0.8
+gamekit material set Assets/Materials/MyMaterial.mat _Glossiness 0.7
 ```
 
 ### Applying to Objects
-```
-manage_gameobject action="set_component_property"
-  target="ObjectName"
-  component_name="MeshRenderer"
-  component_properties={"MeshRenderer": {"sharedMaterial": "Assets/Materials/MyMaterial.mat"}}
+```bash
+gamekit material assign Assets/Materials/MyMaterial.mat ObjectName
 ```
 
 ## Color Presets (RGBA 0-1)
 
 | Color | Values | Use For |
 |-------|--------|---------|
-| Red | [1, 0.2, 0.2, 1] | Enemies, damage, hazards |
-| Green | [0.2, 1, 0.2, 1] | Health, goals, safe zones |
-| Blue | [0.2, 0.5, 1, 1] | Player, water, UI |
-| Gold | [1, 0.85, 0, 1] | Coins, treasure, rewards |
-| Cyan | [0, 1, 1, 1] | Player ship, energy |
-| Purple | [0.7, 0.2, 1, 1] | Magic, special items |
-| Orange | [1, 0.5, 0, 1] | Fire, warnings |
-| White | [1, 1, 1, 1] | Neutral, projectiles |
-| Dark Gray | [0.3, 0.3, 0.3, 1] | Environment, rocks |
-| Brown | [0.5, 0.3, 0.1, 1] | Wood, dirt, crates |
+| Red | 1,0.2,0.2,1 | Enemies, damage, hazards |
+| Green | 0.2,1,0.2,1 | Health, goals, safe zones |
+| Blue | 0.2,0.5,1,1 | Player, water, UI |
+| Gold | 1,0.85,0,1 | Coins, treasure, rewards |
+| Cyan | 0,1,1,1 | Player ship, energy |
+| Purple | 0.7,0.2,1,1 | Magic, special items |
+| Orange | 1,0.5,0,1 | Fire, warnings |
+| White | 1,1,1,1 | Neutral, projectiles |
+| Dark Gray | 0.3,0.3,0.3,1 | Environment, rocks |
+| Brown | 0.5,0.3,0.1,1 | Wood, dirt, crates |
 
 ## Material Types
 
 ### Matte (Default)
-```
-color: [R, G, B, 1]
-metallic: 0
-smoothness: 0.2
+```bash
+gamekit material set <path> _Color R,G,B,1
+gamekit material set <path> _Metallic 0
+gamekit material set <path> _Glossiness 0.2
 ```
 
 ### Shiny/Glossy
-```
-color: [R, G, B, 1]
-metallic: 0
-smoothness: 0.8
+```bash
+gamekit material set <path> _Color R,G,B,1
+gamekit material set <path> _Metallic 0
+gamekit material set <path> _Glossiness 0.8
 ```
 
 ### Metallic
-```
-color: [0.8, 0.8, 0.8, 1]
-metallic: 1.0
-smoothness: 0.7
-```
-
-### Transparent/Glass
-```
-color: [R, G, B, 0.3]  // Low alpha
-renderingMode: Transparent
-metallic: 0
-smoothness: 1.0
-```
-
-### Glowing/Emissive
-```
-color: [R, G, B, 1]
-emission: [R*2, G*2, B*2, 1]  // Brighter than base
+```bash
+gamekit material set <path> _Color 0.8,0.8,0.8,1
+gamekit material set <path> _Metallic 1.0
+gamekit material set <path> _Glossiness 0.7
 ```
 
 ## Organization

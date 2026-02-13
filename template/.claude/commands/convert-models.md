@@ -16,8 +16,8 @@ Examples:
 ## Why This Is Needed
 
 ```
-❌ Resources.Load<GameObject>("Models/zombie")     // NULL - FBX doesn't work
-✅ Resources.Load<GameObject>("Prefabs/Zombie")   // Works - actual prefab
+Resources.Load<GameObject>("Models/zombie")     // NULL - FBX doesn't work
+Resources.Load<GameObject>("Prefabs/Zombie")   // Works - actual prefab
 ```
 
 FBX files are **source assets** that Unity imports. They are NOT directly instantiable.
@@ -27,41 +27,28 @@ To use 3D models at runtime, they must be converted to prefabs.
 
 ### 1. Find FBX/OBJ Files
 
-```
-If no specific file given:
-  manage_asset action="search" search_pattern="*.fbx" path="Assets/Downloaded"
-  manage_asset action="search" search_pattern="*.obj" path="Assets/Downloaded"
-
-List all model files found.
+```bash
+# If no specific file given, search for model files
+# Use Glob to find: Assets/Downloaded/**/*.fbx, *.obj
 ```
 
 ### 2. For Each Model File
 
-```
-# Step 1: Create temp instance from model
-manage_gameobject action="create"
-  name="Temp_[ModelName]"
-  prefab_path="Assets/Downloaded/Models/[model].fbx"
+```bash
+# Step 1: Instantiate from model into scene
+gamekit prefab instantiate Assets/Downloaded/Models/[model].fbx
 
-# Step 2: Optionally add common components
-# (Ask user or auto-add based on type)
-# - Collider for physics
-# - Rigidbody if it should move
+# Step 2: Save as prefab
+gamekit prefab create [ModelName] --output Assets/Resources/Prefabs/[ModelName].prefab
 
-# Step 3: Save as prefab
-manage_gameobject action="save_as_prefab"
-  target="Temp_[ModelName]"
-  prefab_path="Assets/Resources/Prefabs/[ModelName].prefab"
-
-# Step 4: Clean up temp object
-manage_gameobject action="delete"
-  target="Temp_[ModelName]"
+# Step 3: Clean up temp object
+gamekit destroy [ModelName]
 ```
 
 ### 3. Refresh Assets
 
-```
-manage_asset action="refresh"
+```bash
+gamekit refresh
 ```
 
 ### 4. Report Results
@@ -91,20 +78,20 @@ Ask user:
 - Add specific script?
 
 Or auto-detect based on name:
-- "enemy" / "character" → Add Collider + basic setup
-- "pickup" / "item" → Add Collider (trigger) + Rigidbody (kinematic)
-- "projectile" → Add Collider (trigger) + Rigidbody
+- "enemy" / "character" -> Add Collider + basic setup
+- "pickup" / "item" -> Add Collider (trigger) + Rigidbody (kinematic)
+- "projectile" -> Add Collider (trigger) + Rigidbody
 
 ### Batch Conversion
 
 For multiple files:
 ```
 Converting 5 models...
-[1/5] zombie.fbx → Prefabs/Zombie.prefab ✓
-[2/5] skeleton.fbx → Prefabs/Skeleton.prefab ✓
-[3/5] ghost.fbx → Prefabs/Ghost.prefab ✓
-[4/5] boss.fbx → Prefabs/Boss.prefab ✓
-[5/5] coin.fbx → Prefabs/Coin.prefab ✓
+[1/5] zombie.fbx -> Prefabs/Zombie.prefab
+[2/5] skeleton.fbx -> Prefabs/Skeleton.prefab
+[3/5] ghost.fbx -> Prefabs/Ghost.prefab
+[4/5] boss.fbx -> Prefabs/Boss.prefab
+[5/5] coin.fbx -> Prefabs/Coin.prefab
 
 All models converted! Ready for runtime loading.
 ```

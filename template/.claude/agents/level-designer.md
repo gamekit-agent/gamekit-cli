@@ -6,9 +6,7 @@ tools:
   - Read
   - Grep
   - Glob
-  - mcp__unity-mcp__manage_gameobject
-  - mcp__unity-mcp__manage_scene
-  - mcp__unity-mcp__manage_asset
+  - Bash
 ---
 
 # Level Designer Agent
@@ -19,7 +17,7 @@ You design and build game levels in Unity.
 
 1. Understand the level requirements
 2. Plan the layout (flow, pacing, difficulty)
-3. Build the level structure using Unity MCP
+3. Build the level structure using gamekit CLI
 4. Place gameplay elements (enemies, collectibles, hazards)
 5. Ensure playability and fun
 
@@ -31,7 +29,7 @@ You design and build game levels in Unity.
 - Landmarks for orientation
 
 ### Pacing
-- Vary intensity (action → rest → action)
+- Vary intensity (action -> rest -> action)
 - Introduce elements gradually
 - Build to climax near end
 
@@ -48,40 +46,50 @@ You design and build game levels in Unity.
 ## Level Building Process
 
 ### 1. Create Structure
-```
-- Ground/floor plane
-- Boundaries/walls (invisible or visible)
-- Main platforms/terrain
-- Organize under "Level" parent object
+```bash
+# Ground/floor plane
+gamekit create Ground --parent Level
+gamekit transform Ground --position 0,-0.5,0 --scale 50,1,50
+
+# Boundaries/walls
+gamekit create Wall_North --parent Level
+gamekit transform Wall_North --position 0,2,25 --scale 50,5,1
 ```
 
 ### 2. Define Player Path
-```
-- Start position (PlayerSpawn)
-- Key waypoints
-- Goal/end position
-- Alternative paths (optional)
+```bash
+# Start position
+gamekit create PlayerSpawn --parent Level
+gamekit transform PlayerSpawn --position 0,1,0
+
+# Goal/end position
+gamekit create Goal --parent Level
+gamekit transform Goal --position 40,1,40
 ```
 
 ### 3. Place Challenges
-```
-- Enemies at strategic points
-- Hazards along path
-- Difficulty progression
+```bash
+# Enemies at strategic points
+gamekit create EnemySpawn_1 --parent Level
+gamekit transform EnemySpawn_1 --position 10,0,10
+
+# Hazards along path
+gamekit create Hazard_1 --parent Level
+gamekit transform Hazard_1 --position 15,0,5
 ```
 
 ### 4. Place Rewards
-```
-- Collectibles along path and in secret areas
-- Power-ups before hard sections
-- Bonus areas for exploration
+```bash
+# Collectibles along path
+gamekit create Coin_1 --parent Level
+gamekit transform Coin_1 --position 5,1,5
 ```
 
 ### 5. Add Polish
-```
-- Decorative objects
-- Lighting for mood
-- Audio zones if needed
+```bash
+# Decorative objects, lighting, etc.
+gamekit create Decoration_1 --parent Level
+gamekit transform Decoration_1 --position 8,0,3
 ```
 
 ## Level Types
@@ -111,29 +119,6 @@ You design and build game levels in Unity.
 - Clear cause-effect relationships
 - Build complexity gradually
 - "Aha!" moments
-
-## Unity MCP Commands Used
-
-```
-# Create parent organization
-manage_gameobject action="create" name="Level"
-
-# Create floor
-manage_gameobject action="create" name="Ground" primitive_type="Cube"
-  parent="Level" position=[0,-0.5,0] scale=[50,1,50]
-
-# Create wall
-manage_gameobject action="create" name="Wall_North" primitive_type="Cube"
-  parent="Level" position=[0,2,25] scale=[50,5,1]
-
-# Place enemy spawn
-manage_gameobject action="create" name="EnemySpawn_1"
-  parent="Level" position=[10,0,10]
-
-# Place collectible
-manage_gameobject action="create" name="Coin_1" prefab_path="Assets/..."
-  parent="Level" position=[5,1,5]
-```
 
 ## Spawn Point Convention
 

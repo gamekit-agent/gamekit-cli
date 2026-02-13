@@ -52,8 +52,8 @@ Use this skill when the user wants to make simple adjustments to existing game e
 
 ### Size Adjustments
 
-```
-manage_gameobject action="modify" target="[name]" scale=[x, y, z]
+```bash
+gamekit transform [name] --scale x,y,z
 ```
 
 **Typical multipliers:**
@@ -70,28 +70,30 @@ manage_gameobject action="modify" target="[name]" scale=[x, y, z]
 
 ### Color Changes
 
-```
-manage_gameobject action="set_component_property"
-  target="[name]"
-  component_name="MeshRenderer"
-  component_properties={"MeshRenderer": {"material.color": [r, g, b, 1]}}
+```bash
+# Create or update a material
+gamekit material create EnemyRed
+gamekit material set Assets/Materials/EnemyRed.mat _Color 1,0,0,1
+
+# Assign to object
+gamekit material assign Assets/Materials/EnemyRed.mat ObjectName
 ```
 
 **Color presets (RGBA 0-1):**
 | Color | Values |
 |-------|--------|
-| Red | [1, 0, 0, 1] |
-| Green | [0, 1, 0, 1] |
-| Blue | [0, 0, 1, 1] |
-| Yellow | [1, 1, 0, 1] |
-| Orange | [1, 0.5, 0, 1] |
-| Purple | [0.5, 0, 1, 1] |
-| Pink | [1, 0.4, 0.7, 1] |
-| Cyan | [0, 1, 1, 1] |
-| White | [1, 1, 1, 1] |
-| Black | [0, 0, 0, 1] |
-| Gold | [1, 0.84, 0, 1] |
-| Silver | [0.75, 0.75, 0.75, 1] |
+| Red | 1,0,0,1 |
+| Green | 0,1,0,1 |
+| Blue | 0,0,1,1 |
+| Yellow | 1,1,0,1 |
+| Orange | 1,0.5,0,1 |
+| Purple | 0.5,0,1,1 |
+| Pink | 1,0.4,0.7,1 |
+| Cyan | 0,1,1,1 |
+| White | 1,1,1,1 |
+| Black | 0,0,0,1 |
+| Gold | 1,0.84,0,1 |
+| Silver | 0.75,0.75,0.75,1 |
 
 **Lighter/Darker:**
 - Lighter: Multiply each RGB by 1.3 (cap at 1)
@@ -137,9 +139,9 @@ Property: speed in movement script
 ```
 
 ### 2. Get current value
-```
-manage_gameobject action="get_components" target="Player"
-// Find the movement script and current speed value
+```bash
+gamekit inspect Player
+# Find the movement script and current speed value
 ```
 
 ### 3. Calculate new value
@@ -151,10 +153,12 @@ New value: 7.5
 ```
 
 ### 4. Apply change
-```
-manage_script action="read" name="PlayerMovement"
-// Edit the script to change the default, OR
-// Use manage_gameobject to change instance value
+```bash
+# Option A: Edit the script directly to change the default
+# Read the script, find the speed field, edit it
+
+# Option B: Change the component value on the instance
+gamekit set Player PlayerMovement speed 7.5
 ```
 
 ### 5. Confirm to user
@@ -197,11 +201,8 @@ public float speed = 7.5f;
 ### Changing a serialized instance value
 
 If value is set per-instance in the inspector:
-```
-manage_gameobject action="set_component_property"
-  target="Player"
-  component_name="PlayerMovement"
-  component_properties={"PlayerMovement": {"speed": 7.5}}
+```bash
+gamekit set Player PlayerMovement speed 7.5
 ```
 
 ## Communication Style

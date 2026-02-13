@@ -5,16 +5,10 @@ model: sonnet
 tools:
   - Read
   - Write
+  - Edit
   - Glob
   - Grep
   - Bash
-  - mcp__unity-mcp__manage_console
-  - mcp__unity-mcp__manage_gameobject
-  - mcp__unity-mcp__manage_script
-  - mcp__unity-mcp__manage_scene
-  - mcp__unity-mcp__manage_editor
-  - mcp__unity-mcp__manage_asset
-  - mcp__unity-mcp__manage_physics
 ---
 
 # Iterator Agent
@@ -43,50 +37,52 @@ Take a feature or task and iterate on it until it meets quality standards:
 ## The Iteration Loop
 
 ```
-┌────────────────────────────────────────────────────────────┐
-│  UNDERSTAND GOAL                                           │
-│  - What should this feature do?                            │
-│  - What does "done" look like?                             │
-│  - What are the success criteria?                          │
-└────────────────────────────┬───────────────────────────────┘
-                             ▼
-┌────────────────────────────────────────────────────────────┐
-│  ITERATION N                                               │
-│                                                            │
-│  1. PLAN this iteration's focus                            │
-│     - Iteration 1: Core functionality                      │
-│     - Iteration 2: Bug fixes                               │
-│     - Iteration 3+: Polish and refinement                  │
-│                                                            │
-│  2. IMPLEMENT changes                                      │
-│     - Make focused changes                                 │
-│     - One concern at a time                                │
-│                                                            │
-│  3. TEST the result                                        │
-│     - Run play mode test                                   │
-│     - Check console for errors                             │
-│     - Visual verification (screenshot)                     │
-│                                                            │
-│  4. EVALUATE against goal                                  │
-│     - Does it work?                                        │
-│     - Does it feel right?                                  │
-│     - What's still missing?                                │
-│                                                            │
-└────────────────────────────┬───────────────────────────────┘
-                             ▼
-                    ┌────────┴────────┐
-                    │ Quality Gate    │
-                    │ Passed?         │
-                    └────────┬────────┘
-               No ◄──────────┴──────────► Yes
-                │                          │
-                ▼                          ▼
-        ┌───────────────┐         ┌───────────────────┐
-        │ NEXT          │         │ DONE              │
-        │ ITERATION     │         │ Return result     │
-        │ (max 5)       │         │ with quality      │
-        └───────────────┘         │ report            │
-                                  └───────────────────┘
++------------------------------------------------------------+
+|  UNDERSTAND GOAL                                            |
+|  - What should this feature do?                             |
+|  - What does "done" look like?                              |
+|  - What are the success criteria?                           |
++----------------------------+-------------------------------+
+                             |
+                             v
++------------------------------------------------------------+
+|  ITERATION N                                                |
+|                                                             |
+|  1. PLAN this iteration's focus                             |
+|     - Iteration 1: Core functionality                       |
+|     - Iteration 2: Bug fixes                                |
+|     - Iteration 3+: Polish and refinement                   |
+|                                                             |
+|  2. IMPLEMENT changes                                       |
+|     - Make focused changes                                  |
+|     - One concern at a time                                 |
+|                                                             |
+|  3. TEST the result                                         |
+|     - Run play mode test                                    |
+|     - Check console for errors                              |
+|     - Visual verification (screenshot)                      |
+|                                                             |
+|  4. EVALUATE against goal                                   |
+|     - Does it work?                                         |
+|     - Does it feel right?                                   |
+|     - What's still missing?                                 |
+|                                                             |
++----------------------------+-------------------------------+
+                             |
+                             v
+                    +--------+--------+
+                    | Quality Gate    |
+                    | Passed?         |
+                    +--------+--------+
+               No <----------+----------> Yes
+                |                          |
+                v                          v
+        +---------------+         +-------------------+
+        | NEXT          |         | DONE              |
+        | ITERATION     |         | Return result     |
+        | (max 5)       |         | with quality      |
+        +---------------+         | report            |
+                                  +-------------------+
 ```
 
 ## Iteration Process
@@ -142,33 +138,27 @@ Success: "It's high quality"
 ## Testing Protocol
 
 ### After Each Iteration
-```
-1. Save current state
-   manage_scene action="save"
+```bash
+# 1. Check for compile errors
+gamekit console --errors
 
-2. Clear console
-   manage_console action="clear"
+# 2. Enter play mode
+gamekit play start
 
-3. Enter play mode
-   manage_editor action="play"
+# 3. Wait and observe (15-30 seconds)
+sleep 15
 
-4. Wait and observe (15-30 seconds)
-   - Note any errors
-   - Note any visual issues
-   - Note any feel issues
+# 4. Check for runtime errors
+gamekit console --errors
 
-5. Capture screenshot
-   mcp__unity-mcp__manage_menu_item action="execute" menu_path="Tools/Capture Screenshot"
-   sleep 1-2, then: ls -lt Assets/Screenshots/*.png | head -1
-   Read the newest screenshot PNG file
+# 5. Capture screenshot for visual verification
+gamekit screenshot
 
-6. Stop play mode
-   manage_editor action="stop"
+# 6. Stop play mode
+gamekit play stop
 
-7. Get console output
-   manage_console action="get" types=["all"]
-
-8. Evaluate results
+# 7. Read and analyze the screenshot
+# 8. Evaluate results
 ```
 
 ### Evaluation Criteria
@@ -200,7 +190,7 @@ Integration:
 1. Read the error message
 2. Locate the script and line
 3. Fix the syntax/type error
-4. Verify compile succeeds
+4. Verify compile succeeds (gamekit refresh)
 5. Continue iteration
 ```
 
@@ -225,7 +215,7 @@ Integration:
 
 ### Visual Issues
 ```
-1. Take screenshot
+1. Take screenshot (gamekit screenshot)
 2. Identify the issue
 3. Adjust positions/scales/colors
 4. Re-capture and verify
@@ -272,9 +262,9 @@ What Was Built:
 - ...
 
 Quality Assessment:
-- Functional: ✓
-- Visual: ✓
-- Feel: ✓
+- Functional: Pass
+- Visual: Pass
+- Feel: Pass
 - Polish: [Status]
 
 Known Limitations:
@@ -288,7 +278,7 @@ Ready for User: [Yes/No with explanation]
 ### Using Scene-Awareness
 ```
 Before each iteration:
-- Capture current state
+- Capture current state (gamekit hierarchy)
 After each iteration:
 - Compare to pre-state
 - Track what changed

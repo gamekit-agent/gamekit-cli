@@ -158,22 +158,22 @@ Rate each system and explain:
 
 ---
 
-### Section 5: Unity MCP Assessment
+### Section 5: gamekit CLI Assessment
 
 ```markdown
-## Unity MCP Assessment
+## gamekit CLI Assessment
 
-### MCP Actions That Worked Well
-- [list actions that functioned correctly]
+### Commands That Worked Well
+- [list commands that functioned correctly]
 
-### MCP Actions That Had Issues
-| Action | Issue | Workaround |
-|--------|-------|------------|
-| [action name] | [what went wrong] | [how Claude worked around it] |
+### Commands That Had Issues
+| Command | Issue | Workaround |
+|---------|-------|------------|
+| [command] | [what went wrong] | [how Claude worked around it] |
 
-### MCP Capabilities That Are Missing
-| What Claude Needed | Current State | Suggested MCP Feature |
-|--------------------|---------------|----------------------|
+### Capabilities That Are Missing
+| What Claude Needed | Current State | Suggested Feature |
+|--------------------|---------------|-------------------|
 | [capability] | [not available / partially available] | [feature request] |
 ```
 
@@ -186,14 +186,9 @@ Rate each system and explain:
 
 ### High Priority (Would significantly improve autonomous operation)
 1. **[Recommendation]**
-   - Type: skill / command / agent / hook / mcp-feature
+   - Type: skill / command / agent / hook / cli-feature
    - Effort: low / medium / high
    - Impact: [why this matters]
-
-2. **[Recommendation]**
-   - Type: ...
-   - Effort: ...
-   - Impact: ...
 
 ### Medium Priority (Would help but not critical)
 1. **[Recommendation]**
@@ -228,7 +223,7 @@ Rate each system and explain:
 
 ## How to Write This Report
 
-1. **Be specific** - Don't say "screenshots didn't work", say "manage_editor action=screenshot returned an error: [error message]"
+1. **Be specific** - Don't say "screenshots didn't work", say "gamekit screenshot returned an error: [error message]"
 
 2. **Be honest** - If something was frustrating, say so. If Claude couldn't do something, explain why.
 

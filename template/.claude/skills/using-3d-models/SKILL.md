@@ -17,12 +17,20 @@ This is NOT optional. Do NOT wait for user to ask. Do NOT use the FBX path in co
 - Any `Resources.Load<GameObject>()` involving models
 
 ### Automatic Conversion Steps
-```
-1. manage_gameobject action="create" name="TempConvert" prefab_path="Assets/Downloaded/Models/model.fbx"
-2. manage_gameobject action="save_as_prefab" target="TempConvert" prefab_path="Assets/Resources/Prefabs/ModelName.prefab"
-3. manage_gameobject action="delete" target="TempConvert"
-4. manage_asset action="refresh"
-5. USE the prefab path in code, NEVER the FBX path
+```bash
+# 1. Instantiate the FBX into the scene
+gamekit prefab instantiate Assets/Downloaded/Models/model.fbx
+
+# 2. Save the scene object as a proper prefab
+gamekit prefab create TempConvert --output Assets/Resources/Prefabs/ModelName.prefab
+
+# 3. Remove the temp object
+gamekit destroy TempConvert
+
+# 4. Refresh assets
+gamekit refresh
+
+# 5. USE the prefab path in code, NEVER the FBX path
 ```
 
 ---
@@ -32,8 +40,8 @@ This is NOT optional. Do NOT wait for user to ask. Do NOT use the FBX path in co
 **FBX files are NOT prefabs.** They cannot be loaded at runtime via `Resources.Load<GameObject>()`.
 
 ```
-❌ Resources.Load<GameObject>("Models/character")  // Returns NULL for FBX
-✅ Resources.Load<GameObject>("Prefabs/Character") // Works for actual prefabs
+Resources.Load<GameObject>("Models/character")  // Returns NULL for FBX
+Resources.Load<GameObject>("Prefabs/Character") // Works for actual prefabs
 ```
 
 ## When This Matters
@@ -49,39 +57,23 @@ This is NOT optional. Do NOT wait for user to ask. Do NOT use the FBX path in co
 
 ## Solution: Convert FBX to Prefab
 
-### Method 1: Via MCP (Preferred - Automatic)
+### Via gamekit CLI (Preferred - Automatic)
 
-```
-Step 1: Create temporary instance from FBX
-manage_gameobject action="create"
-  name="TempModel"
-  prefab_path="Assets/Downloaded/Models/character.fbx"
+```bash
+# Step 1: Instantiate from FBX into scene
+gamekit prefab instantiate Assets/Downloaded/Models/character.fbx
 
-Step 2: Save as prefab
-manage_gameobject action="save_as_prefab"
-  target="TempModel"
-  prefab_path="Assets/Resources/Prefabs/Character.prefab"
+# Step 2: Save as prefab
+gamekit prefab create character --output Assets/Resources/Prefabs/Character.prefab
 
-Step 3: Delete temp object
-manage_gameobject action="delete" target="TempModel"
+# Step 3: Delete temp object
+gamekit destroy character
 
-Step 4: Refresh assets
-manage_asset action="refresh"
+# Step 4: Refresh assets
+gamekit refresh
 ```
 
-### Method 2: Using manage_asset directly
-
-```
-For prefab operations on FBX:
-manage_asset action="create"
-  path="Assets/Resources/Prefabs/Character.prefab"
-  asset_type="Prefab"
-  properties={
-    "sourceModel": "Assets/Downloaded/Models/character.fbx"
-  }
-```
-
-### Method 3: Scene-based (Manual steps)
+### Scene-based (Manual steps)
 
 ```
 1. Drag FBX from Project into Scene hierarchy
@@ -95,8 +87,7 @@ manage_asset action="create"
 
 **ALWAYS do this after downloading 3D models:**
 
-```python
-# After asset-finder downloads an FBX:
+```
 1. Check file type (is it .fbx, .obj, .blend?)
 2. If yes, immediately convert to prefab
 3. Place prefab in Resources/Prefabs/ for runtime access
@@ -166,12 +157,12 @@ Assets/
 
 ## Checklist: After Downloading 3D Models
 
-1. ✅ Download FBX/OBJ to `Assets/Downloaded/Models/`
-2. ✅ Refresh Unity assets (`manage_asset action="refresh"`)
-3. ✅ Convert to prefab in `Assets/Resources/Prefabs/`
-4. ✅ Add needed components (Collider, Rigidbody, scripts)
-5. ✅ Report PREFAB path to user, not FBX path
-6. ✅ Use prefab path in any scripts that need runtime loading
+1. Download FBX/OBJ to `Assets/Downloaded/Models/`
+2. Refresh Unity assets (`gamekit refresh`)
+3. Convert to prefab in `Assets/Resources/Prefabs/`
+4. Add needed components (Collider, Rigidbody, scripts)
+5. Report PREFAB path to user, not FBX path
+6. Use prefab path in any scripts that need runtime loading
 
 ## Common Mistakes
 
@@ -194,9 +185,9 @@ gameObject.AddComponent<EnemyVisual>();
 ```
 
 ### Mistake 3: Not refreshing assets after conversion
-```
-// Always refresh after creating prefabs
-manage_asset action="refresh"
+```bash
+# Always refresh after creating prefabs
+gamekit refresh
 ```
 
 ## Quick Reference
@@ -204,10 +195,10 @@ manage_asset action="refresh"
 | Task | Command |
 |------|---------|
 | Check if FBX | File extension is .fbx, .obj, .blend |
-| Create from FBX | `manage_gameobject action="create" prefab_path="path/to/model.fbx"` |
-| Save as prefab | `manage_gameobject action="save_as_prefab" target="Name" prefab_path="Assets/Resources/..."` |
+| Instantiate from FBX | `gamekit prefab instantiate path/to/model.fbx` |
+| Save as prefab | `gamekit prefab create Name --output Assets/Resources/...` |
 | Load at runtime | `Resources.Load<GameObject>("Prefabs/Name")` (no .prefab extension) |
-| Refresh assets | `manage_asset action="refresh"` |
+| Refresh assets | `gamekit refresh` |
 
 ## Output to User
 
@@ -222,19 +213,19 @@ When working with 3D models, explain:
 
 Claude does NOT wait for `/convert-models` command. The moment an FBX file is involved:
 
-1. ✅ **Download** → Immediately convert to prefab
-2. ✅ **Write spawning code** → Use prefab path, convert if needed
-3. ✅ **User mentions model** → Check if prefab exists, convert if not
-4. ✅ **Resources.Load for model** → ALWAYS use Prefabs/ path
+1. **Download** -> Immediately convert to prefab
+2. **Write spawning code** -> Use prefab path, convert if needed
+3. **User mentions model** -> Check if prefab exists, convert if not
+4. **Resources.Load for model** -> ALWAYS use Prefabs/ path
 
 **The `/convert-models` command exists only as a manual fallback if something was missed.**
 
 ### Quick Auto-Conversion (Copy-Paste Ready)
-```
-manage_gameobject action="create" name="TempConvert" prefab_path="Assets/Downloaded/Models/MODEL.fbx"
-manage_gameobject action="save_as_prefab" target="TempConvert" prefab_path="Assets/Resources/Prefabs/MODEL.prefab"
-manage_gameobject action="delete" target="TempConvert"
-manage_asset action="refresh"
+```bash
+gamekit prefab instantiate Assets/Downloaded/Models/MODEL.fbx
+gamekit prefab create MODEL --output Assets/Resources/Prefabs/MODEL.prefab
+gamekit destroy MODEL
+gamekit refresh
 ```
 
 Then in code: `Resources.Load<GameObject>("Prefabs/MODEL")`

@@ -6,10 +6,7 @@ tools:
   - Read
   - Grep
   - Glob
-  - mcp__unity-mcp__manage_console
-  - mcp__unity-mcp__manage_gameobject
-  - mcp__unity-mcp__manage_script
-  - mcp__unity-mcp__manage_scene
+  - Bash
 ---
 
 # Code Debugger Agent
@@ -28,8 +25,8 @@ You systematically find and fix bugs in Unity games.
 ## Debugging Process
 
 ### Step 1: Get Error Info
-```
-manage_console action="get" types=["error", "exception", "warning"]
+```bash
+gamekit console --errors
 ```
 
 ### Step 2: Understand the Symptom
@@ -48,9 +45,9 @@ Based on symptom, consider:
 
 ### Step 4: Investigate
 - Read relevant scripts
-- Check object components
+- Check object components: `gamekit inspect [object]`
 - Verify references are set
-- Check layer/tag configuration
+- Check layer/tag configuration: `gamekit settings`
 
 ### Step 5: Fix and Verify
 - Make minimal fix
@@ -84,9 +81,9 @@ if (myReference == null)
 ### Collisions Not Working
 **Symptom:** Objects pass through each other
 **Check:**
-1. Both have Colliders?
+1. Both have Colliders? (`gamekit inspect [object]`)
 2. At least one has Rigidbody?
-3. Layer collision matrix allows collision?
+3. Layer collision matrix allows collision? (`gamekit settings`)
 4. Colliders sized correctly?
 5. isTrigger set correctly?
 
@@ -101,7 +98,7 @@ if (myReference == null)
 ### Movement Not Working
 **Symptom:** Player doesn't move
 **Check:**
-1. Script attached?
+1. Script attached? (`gamekit inspect Player`)
 2. Script enabled?
 3. Input axes configured?
 4. For multiplayer: ownership check blocking?
@@ -118,18 +115,21 @@ if (myReference == null)
 
 ## Investigation Commands
 
-```
+```bash
 # Get scene hierarchy
-manage_scene action="get_hierarchy"
+gamekit hierarchy
 
 # Get object components
-manage_gameobject action="get_components" target="ObjectName"
+gamekit inspect ObjectName
 
-# Read a script
-manage_script action="read" name="ScriptName"
+# Read a script (use Read tool directly)
+# Read file_path="Assets/_Game/Scripts/ScriptName.cs"
 
-# Find objects by tag
-manage_gameobject action="find" search_term="TagName" search_method="by_tag"
+# Find objects by component type
+gamekit hierarchy --component Rigidbody
+
+# Check project settings
+gamekit settings
 ```
 
 ## Output Format
@@ -144,7 +144,7 @@ VERIFICATION: [How to test it works]
 
 If multiple issues:
 ```
-ISSUE 1: [Problem] → [Fix]
-ISSUE 2: [Problem] → [Fix]
+ISSUE 1: [Problem] -> [Fix]
+ISSUE 2: [Problem] -> [Fix]
 ...
 ```

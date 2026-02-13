@@ -11,13 +11,13 @@ Starts the game in Unity's Play mode and watches for errors, warnings, or issues
 Examples:
 - `/playtest` -> Start playing and watch for any errors
 - `/playtest for 30 seconds` -> Play for a specific duration
-- `/playtest and check performance` -> Also monitor FPS/performance
+- `/playtest and check performance` -> Also monitor for issues
 - `/playtest the multiplayer` -> Test with focus on Normcore sync
 
 ## Steps
 
-1. Clear the console of old messages
-2. Enter Play mode using manage_editor
+1. Check console for pre-existing errors
+2. Enter Play mode
 3. Wait for user to play or for specified duration
 4. Check console for errors and warnings
 5. Report any issues found
@@ -26,29 +26,29 @@ Examples:
 ## Process
 
 ### Before Playing
-```
-1. manage_console action="clear" - Clear old logs
-2. manage_editor action="get_state" - Check current state
+```bash
+gamekit console --errors        # Check for pre-existing errors
+gamekit play status             # Check current state
 ```
 
 ### Start Playing
-```
-1. manage_editor action="play" - Enter play mode
-2. Tell user "Game is running! Play around and I'll watch for issues."
+```bash
+gamekit play start              # Enter play mode
+# Tell user "Game is running! Play around and I'll watch for issues."
 ```
 
 ### While Playing
-```
-1. Periodically check: manage_console action="get" types=["error", "warning"]
-2. If errors found, report them immediately
-3. Monitor for common issues
+```bash
+# Periodically check for errors
+gamekit console --errors
+# If errors found, report them immediately
 ```
 
 ### Stop Playing
-```
-1. manage_editor action="stop" - Exit play mode
-2. Final console check
-3. Summarize all issues found
+```bash
+gamekit play stop               # Exit play mode
+gamekit console --errors        # Final console check
+# Summarize all issues found
 ```
 
 ## Common Issues to Watch For
@@ -69,9 +69,6 @@ Examples:
 **Physics Issues**
 - Objects falling through floor
 - Erratic collision behavior
-
-**Performance**
-- If checking performance, use manage_profiler
 
 ## What to Report
 

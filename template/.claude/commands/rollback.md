@@ -18,23 +18,23 @@ Examples:
 
 ### For Scene Changes (GameObjects, Components)
 
-Since Unity doesn't have native undo via MCP, rollback works by:
+Since Unity doesn't have native undo via CLI, rollback works by:
 1. Claude tracks changes made during the session
 2. On rollback, Claude reverses those changes explicitly
 
 **Track these changes:**
-- Object creation → Delete the object
-- Object deletion → Cannot fully restore (warn user)
-- Property changes → Restore previous value
-- Component addition → Remove component
-- Component removal → Cannot fully restore
+- Object creation -> Delete the object (`gamekit destroy`)
+- Object deletion -> Cannot fully restore (warn user)
+- Property changes -> Restore previous value (`gamekit set`, `gamekit transform`)
+- Component addition -> Cannot easily remove (warn user)
+- Component removal -> Cannot fully restore
 
 ### For Script Changes
 
-Scripts modified via manage_script can be rolled back:
+Scripts modified via Write/Edit can be rolled back:
 1. Claude reads script before modification (cached)
 2. On rollback, restore the cached version
-3. Trigger asset refresh
+3. Trigger asset refresh: `gamekit refresh`
 
 ### For Asset Changes
 
@@ -86,15 +86,14 @@ Changes this session:
 
 | Change Type | Reversal Action |
 |-------------|-----------------|
-| Create object | Delete object |
-| Delete object | ⚠️ Cannot restore - offer to recreate |
-| Modify property | Set back to previous value |
-| Add component | Remove component |
-| Remove component | ⚠️ Cannot restore - offer to re-add |
+| Create object | `gamekit destroy [path]` |
+| Delete object | Cannot restore - offer to recreate |
+| Modify transform | `gamekit transform [path] --position/--scale` to previous values |
+| Set property | `gamekit set [path] [comp] [prop] [old_value]` |
+| Add component | Cannot easily remove - warn user |
 | Create script | Delete script file |
 | Modify script | Restore cached version |
-| Create asset | Delete asset |
-| Modify asset | Restore cached version |
+| Create material | Delete material file |
 
 ## User Interaction
 
@@ -159,9 +158,9 @@ Claude: "Rolling back: Player scale change
 
 User: /rollback last 3
 Claude: "I'll undo the last 3 changes:
-        1. Enemy speed: 8 → 5
-        2. Coin color: gold → yellow
-        3. Player health: 5 → 3
+        1. Enemy speed: 8 -> 5
+        2. Coin color: gold -> yellow
+        3. Player health: 5 -> 3
         All rolled back!"
 ```
 

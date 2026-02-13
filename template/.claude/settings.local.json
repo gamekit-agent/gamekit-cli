@@ -6,6 +6,7 @@
       "Write",
       "WebSearch",
       "WebFetch",
+      "Bash(gamekit *)",
       "Bash(npm *)",
       "Bash(npx *)",
       "Bash(git *)",
@@ -28,19 +29,6 @@
       "Bash(wget *)",
       "Bash(unzip *)",
       "Bash(tar *)",
-      "mcp__unity-mcp__manage_gameobject",
-      "mcp__unity-mcp__manage_console",
-      "mcp__unity-mcp__manage_asset",
-      "mcp__unity-mcp__manage_scene",
-      "mcp__unity-mcp__manage_script",
-      "mcp__unity-mcp__manage_editor",
-      "mcp__unity-mcp__manage_build",
-      "mcp__unity-mcp__manage_rendering",
-      "mcp__unity-mcp__manage_physics",
-      "mcp__unity-mcp__manage_packagemanager",
-      "mcp__unity-mcp__manage_profiler",
-      "mcp__unity-mcp__manage_menu_item",
-      "mcp__unity-mcp__manage_playerprefs",
       "Skill(*)"
     ],
     "deny": [
@@ -58,18 +46,14 @@
       "Bash(* > /dev/*)"
     ]
   },
-  "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "unity-mcp"
-  ],
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "mcp__unity-mcp__manage_script",
+        "matcher": "Write",
         "hooks": [
           {
             "type": "command",
-            "command": "echo '[SCRIPT] Script modified - verify-changes: Check console for compile errors, run quick test if needed.'"
+            "command": "if [[ \"$CLAUDE_TOOL_ARG_FILE_PATH\" == *.cs ]]; then echo '[C#] File written - verify-changes: Wait for recompile, check for errors.'; fi"
           }
         ]
       },
@@ -79,24 +63,6 @@
           {
             "type": "command",
             "command": "if [[ \"$CLAUDE_TOOL_ARG_FILE_PATH\" == *.cs ]]; then echo '[C#] File edited - verify-changes: Wait for recompile, check for errors.'; fi"
-          }
-        ]
-      },
-      {
-        "matcher": "mcp__unity-mcp__manage_gameobject",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '[GAMEOBJECT] GameObject modified - scene-awareness: Track this change for potential rollback.'"
-          }
-        ]
-      },
-      {
-        "matcher": "mcp__unity-mcp__manage_physics",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '[PHYSICS] Physics modified - verify-changes: Test collisions/triggers after this change.'"
           }
         ]
       }

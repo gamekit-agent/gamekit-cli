@@ -30,24 +30,23 @@ Run quality gate before:
 
 All of these must be true before proceeding:
 
-```
-□ Game runs without errors
-  → manage_console action="get" types=["error", "exception"]
-  → Must return empty or only ignorable warnings
+```bash
+# Game runs without errors
+gamekit console --errors
+# -> Must return empty or only ignorable warnings
 
-□ No compile errors
-  → manage_console shows no CS#### errors
+# No compile errors (check for CS#### errors)
 
-□ Core loop works
-  → Player can perform main action
-  → Win/lose conditions function
-  → Game doesn't crash during play
+# Core loop works
+# -> Player can perform main action
+# -> Win/lose conditions function
+# -> Game doesn't crash during play
 
-□ 30-second play test passes
-  → manage_editor action="play"
-  → Wait 30 seconds
-  → Check console clean
-  → manage_editor action="stop"
+# 30-second play test passes
+gamekit play start
+sleep 30
+gamekit console --errors
+gamekit play stop
 ```
 
 **If Gate 1 fails:** Fix issues before continuing. Do not present to user.
@@ -59,24 +58,10 @@ All of these must be true before proceeding:
 These should be true for good user experience:
 
 ```
-□ Controls are responsive
-  → Input is processed without noticeable delay
-  → Movement feels smooth
-
-□ Collisions work correctly
-  → Player doesn't fall through floor
-  → Triggers fire appropriately
-  → Physics behave as expected
-
-□ Game state is clear
-  → Player knows what to do
-  → Objectives are apparent
-  → Progress is visible
-
-□ Difficulty is reasonable
-  → Not impossible
-  → Not trivially easy
-  → Challenge feels fair
+- Controls are responsive (input processed without noticeable delay)
+- Collisions work correctly (player doesn't fall through floor)
+- Game state is clear (player knows what to do)
+- Difficulty is reasonable (not impossible, not trivially easy)
 ```
 
 **If Gate 2 fails:** Note issues for improvement, but can present with caveats.
@@ -87,38 +72,18 @@ These should be true for good user experience:
 
 Take screenshot and verify:
 
-```
-□ Scene isn't empty/bare
-  → Environment has substance
-  → Not just floating objects in void
+```bash
+# Capture and analyze game view
+gamekit screenshot
+# Read the returned screenshot path and analyze the image
 
-□ Colors are intentional
-  → Not default Unity gray everywhere
-  → Materials applied to objects
-  → No pink (missing material) errors
-
-□ UI is readable
-  → Text is visible against background
-  → Elements are appropriately sized
-  → Nothing is cut off or overlapping
-
-□ Camera shows the action
-  → Player is visible
-  → Important elements in frame
-  → No clipping issues
-
-□ Scale feels right
-  → Objects are proportional
-  → Player size appropriate to world
-```
-
-**Visual check process:**
-```
-1. mcp__unity-mcp__manage_menu_item action="execute" menu_path="Tools/Capture Screenshot"
-2. sleep 1-2, then: ls -lt Assets/Screenshots/*.png | head -1
-3. Read the newest screenshot PNG file
-4. Evaluate against checklist
-5. Note any visual issues
+# Check:
+# - Scene isn't empty/bare
+# - Colors are intentional (not default gray everywhere)
+# - No pink (missing material) errors
+# - UI is readable
+# - Camera shows the action
+# - Scale feels right
 ```
 
 ---
@@ -128,24 +93,10 @@ Take screenshot and verify:
 For high-quality presentation:
 
 ```
-□ Audio feedback exists
-  → Actions have sound effects
-  → Background music (if appropriate)
-
-□ Visual feedback exists
-  → Hit effects
-  → Collection effects
-  → UI responds to actions
-
-□ Game feel is good
-  → Screen shake on impacts
-  → Particle effects where appropriate
-  → Animations are smooth
-
-□ Edge cases handled
-  → Player can't get stuck
-  → Enemies don't behave erratically
-  → Game handles rapid inputs
+- Audio feedback exists (actions have sound effects)
+- Visual feedback exists (hit effects, collection effects)
+- Game feel is good (screen shake, particles, animations)
+- Edge cases handled (player can't get stuck, enemies don't behave erratically)
 ```
 
 ---
@@ -155,21 +106,21 @@ For high-quality presentation:
 ### Before Presenting Work
 ```
 1. Run Gate 1 (Functional)
-   → If FAIL: Fix and re-test
-   → If PASS: Continue
+   -> If FAIL: Fix and re-test
+   -> If PASS: Continue
 
 2. Run Gate 2 (Playability)
-   → Note any issues
-   → Fix critical playability issues
+   -> Note any issues
+   -> Fix critical playability issues
 
 3. Run Gate 3 (Visual)
-   → Take screenshot
-   → Evaluate visuals
-   → Fix glaring visual issues
+   -> Take screenshot
+   -> Evaluate visuals
+   -> Fix glaring visual issues
 
 4. Consider Gate 4 (Polish)
-   → Note polish opportunities
-   → Apply quick wins if time allows
+   -> Note polish opportunities
+   -> Apply quick wins if time allows
 
 5. Generate Quality Report
 ```
@@ -178,22 +129,22 @@ For high-quality presentation:
 ```
 ## Quality Gate: [PASS/PASS WITH NOTES/NEEDS WORK]
 
-### Functional (Gate 1): ✓ PASS
+### Functional (Gate 1): PASS
 - No errors in 30s test
 - Core loop verified
 - Stable performance
 
-### Playability (Gate 2): ✓ PASS
+### Playability (Gate 2): PASS
 - Controls responsive
 - Collisions working
 - Objectives clear
 
-### Visual (Gate 3): ⚠️ NOTES
+### Visual (Gate 3): NOTES
 - Scene looks good
 - UI readable
 - Note: Could use more environment detail
 
-### Polish (Gate 4): ℹ️ OPPORTUNITIES
+### Polish (Gate 4): OPPORTUNITIES
 - Sound effects: Not yet added
 - Particles: Basic only
 - Could add: screen shake on damage
@@ -210,23 +161,23 @@ If quality gate finds issues, attempt automatic fixes:
 
 ### Visual Issues
 ```
-Empty scene → Add environment basics
-Missing materials → Create and apply simple materials
-UI hard to read → Adjust text size/color
+Empty scene -> Add environment basics
+Missing materials -> Create and apply simple materials
+UI hard to read -> Adjust text size/color
 ```
 
 ### Playability Issues
 ```
-Controls unresponsive → Check input script
-Collisions not working → Verify physics setup
-Unclear objectives → Add UI hints
+Controls unresponsive -> Check input script
+Collisions not working -> Verify physics setup
+Unclear objectives -> Add UI hints
 ```
 
 ### Polish Quick Wins
 ```
-No audio → Add placeholder sounds from free assets
-No effects → Add basic particles (Unity built-in)
-Stiff movement → Add smoothing/lerping
+No audio -> Add placeholder sounds from free assets
+No effects -> Add basic particles (Unity built-in)
+Stiff movement -> Add smoothing/lerping
 ```
 
 ---
@@ -248,8 +199,8 @@ quality-gate: Uses that data for evaluation
 ### With adding-juice Skill
 ```
 quality-gate identifies polish gaps
-→ adding-juice skill applies polish
-→ quality-gate re-evaluates
+-> adding-juice skill applies polish
+-> quality-gate re-evaluates
 ```
 
 ---
@@ -300,9 +251,9 @@ quality-gate identifies polish gaps
 ### High Quality Pass
 ```
 "Enemy system complete! Ran quality checks:
-✓ No errors in 30 second test
-✓ Enemies chase and damage player correctly
-✓ Visuals look good (screenshot verified)
+- No errors in 30 second test
+- Enemies chase and damage player correctly
+- Visuals look good (screenshot verified)
 
 Ready for you to play!"
 ```
@@ -334,10 +285,10 @@ Working on fixes before you test..."
 
 Claude does NOT skip quality checks:
 
-1. ✅ **Feature complete** → Run quality gate
-2. ✅ **Gate 1 fails** → Fix before continuing
-3. ✅ **Visual issues** → Screenshot and verify
-4. ✅ **Polish gaps** → Note or quick-fix
-5. ✅ **Only then** → Present to user as "done"
+1. **Feature complete** -> Run quality gate
+2. **Gate 1 fails** -> Fix before continuing
+3. **Visual issues** -> Screenshot and verify
+4. **Polish gaps** -> Note or quick-fix
+5. **Only then** -> Present to user as "done"
 
 **Never present broken or low-quality work. Quality gate ensures everything Claude delivers is worth the user's time to test.**

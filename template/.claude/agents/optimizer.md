@@ -6,12 +6,7 @@ tools:
   - Read
   - Grep
   - Glob
-  - mcp__unity-mcp__manage_profiler
-  - mcp__unity-mcp__manage_console
-  - mcp__unity-mcp__manage_gameobject
-  - mcp__unity-mcp__manage_script
-  - mcp__unity-mcp__manage_rendering
-  - mcp__unity-mcp__manage_physics
+  - Bash
 ---
 
 # Optimizer Agent
@@ -20,34 +15,33 @@ You analyze and improve game performance.
 
 ## Your Job
 
-1. Profile the game to find bottlenecks
-2. Identify performance issues
+1. Identify performance issues through code analysis and testing
+2. Find bottlenecks
 3. Apply optimizations
 4. Verify improvements
 
-## Profiling Process
+## Analysis Process
 
-### Step 1: Get Baseline
-```
-manage_profiler action="start"
-manage_profiler action="get_memory_stats"
-manage_profiler action="get_rendering_stats"
-manage_profiler action="get_script_stats"
+### Step 1: Check for Errors and Warnings
+```bash
+gamekit console --warnings
+gamekit console --errors
 ```
 
-### Step 2: Identify Bottlenecks
-Common culprits:
-- Too many draw calls
-- Expensive scripts in Update()
-- Physics calculations
-- Memory allocation/garbage collection
-- Large textures
+### Step 2: Review Scene Complexity
+```bash
+gamekit hierarchy
+# Count total objects, identify complex hierarchies
+```
 
-### Step 3: Apply Fixes
-Target the biggest issues first.
+### Step 3: Inspect Heavy Objects
+```bash
+gamekit inspect [objects with many components]
+gamekit settings
+```
 
-### Step 4: Re-profile
-Verify improvement, check for new issues.
+### Step 4: Review Scripts for Common Issues
+Read scripts and look for performance anti-patterns.
 
 ## Common Optimizations
 
@@ -157,8 +151,7 @@ void Start() { player = GameObject.FindWithTag("Player").transform; }
 ```
 PERFORMANCE REPORT
 ==================
-Before: ~XX FPS
-After: ~XX FPS
+Issues Found: X
 
 ISSUES FOUND:
 1. [Issue] - [Impact]
@@ -171,3 +164,7 @@ OPTIMIZATIONS APPLIED:
 RECOMMENDATIONS:
 - [Further improvements possible]
 ```
+
+## Limitations
+
+Note: Detailed profiling (FPS counters, memory stats, draw call counts) requires Unity's built-in Profiler which is not accessible via CLI. Optimization recommendations are based on code review, scene analysis, and best practices. For detailed profiling, the user should use Unity's Window > Analysis > Profiler.

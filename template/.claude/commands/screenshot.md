@@ -12,7 +12,6 @@ Examples:
 - `/screenshot` -> Capture current game view
 - `/screenshot game` -> Capture Game view specifically
 - `/screenshot scene` -> Capture Scene view
-- `/screenshot both` -> Capture both views
 - `/screenshot ui` -> Focus on UI elements
 
 ## Why This Matters
@@ -28,60 +27,42 @@ Screenshots enable visual verification and iteration.
 
 ## Process
 
-### Step 1: Prepare the View
-```
-If in Edit mode and want Game view:
-1. manage_editor action="play" - Enter play mode briefly
-2. Wait 1-2 seconds for scene to render
+### Step 1: Capture Screenshot
+```bash
+# Game view (default)
+gamekit screenshot
 
-If specific view requested:
-1. Adjust camera or focus as needed
-```
+# Scene view
+gamekit screenshot --scene
 
-### Step 2: Capture Screenshot
-```
-# Use the menu item - this is the WORKING method
-mcp__unity-mcp__manage_menu_item
-  action="execute"
-  menu_path="Tools/Capture Screenshot"
+# From a specific camera
+gamekit screenshot --camera MainCamera
 
-# Wait for file to write
-sleep 1-2
-
-# Find the newest screenshot
-ls -lt Assets/Screenshots/*.png | head -1
+# Custom resolution
+gamekit screenshot --width 1920 --height 1080
 ```
 
-### Step 3: Read and Analyze
+### Step 2: Read and Analyze
 ```
 # Read the screenshot file (Claude can see images)
-Read file_path="Assets/Screenshots/screenshot_YYYYMMDD_HHMMSS.png"
+# The gamekit screenshot command returns the file path in its output
+Read file_path="<path from output>"
 
 # Analyze visual elements:
-   - Layout and composition
-   - Color scheme and contrast
-   - UI readability
-   - Object placement
-   - Overall polish level
+#   - Layout and composition
+#   - Color scheme and contrast
+#   - UI readability
+#   - Object placement
+#   - Overall polish level
 ```
 
-### Step 4: Report Findings
+### Step 3: Report Findings
 ```
 Present to user or use internally:
 - What looks good
 - What needs improvement
 - Specific issues spotted
 - Suggestions for visual polish
-```
-
-## Screenshot Locations
-
-Save screenshots to:
-```
-Assets/Screenshots/
-├── debug/           # Temporary debugging screenshots
-├── progress/        # Progress captures during development
-└── final/           # Final quality screenshots
 ```
 
 ## Visual Quality Checklist
@@ -121,15 +102,6 @@ Claude should capture screenshots:
 - When debugging visual issues
 - During quality gate checks
 
-## Fallback: Manual Screenshot
-
-If MCP screenshot is unavailable:
-```
-1. Tell user to press Play in Unity
-2. Ask them to share a screenshot
-3. Or use Unity's built-in: Window > Analysis > Frame Debugger
-```
-
 ## Integration with Other Tools
 
 - **quality-gate skill**: Screenshot is part of visual verification
@@ -143,7 +115,7 @@ When reporting screenshot analysis:
 ## Visual Check: [View Type]
 
 ### Screenshot Captured
-Location: Assets/Screenshots/[filename].png
+Location: [file path]
 
 ### Analysis
 **Looks Good:**

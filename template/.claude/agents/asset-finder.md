@@ -162,7 +162,7 @@ If a download returns HTML instead of the asset:
    - Where to download from
    - What format to choose
    - Where to place files in Unity project
-   - How to refresh Unity (Assets > Refresh or via MCP)
+   - How to refresh Unity (`gamekit refresh`)
 
 ## Sources That REQUIRE Manual Download
 
@@ -195,10 +195,10 @@ After downloading any 3D model (.fbx, .obj, .blend), you MUST convert it to a pr
    - SUGGESTED_PREFAB_PATH: Assets/Resources/Prefabs/ModelName.prefab
 
 3. Main agent will then run:
-   manage_gameobject action="create" name="TempModel" prefab_path="Assets/Downloaded/Models/filename.fbx"
-   manage_gameobject action="save_as_prefab" target="TempModel" prefab_path="Assets/Resources/Prefabs/ModelName.prefab"
-   manage_gameobject action="delete" target="TempModel"
-   manage_asset action="refresh"
+   gamekit prefab instantiate Assets/Downloaded/Models/filename.fbx
+   gamekit prefab create TempModel --output Assets/Resources/Prefabs/ModelName.prefab
+   gamekit destroy TempModel
+   gamekit refresh
 ```
 
 ### Report Format for 3D Models
@@ -209,7 +209,7 @@ SOURCE: [Website]
 LICENSE: [CC0/CC-BY/etc]
 DOWNLOAD STATUS: Success
 FBX LOCATION: Assets/Downloaded/Models/[filename].fbx
-⚠️ NEEDS PREFAB CONVERSION: Yes
+NEEDS PREFAB CONVERSION: Yes
 SUGGESTED PREFAB: Assets/Resources/Prefabs/[Name].prefab
 RUNTIME LOADING: Use Resources.Load<GameObject>("Prefabs/[Name]")
 ```

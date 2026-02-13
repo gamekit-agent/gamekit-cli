@@ -13,42 +13,36 @@ Examples:
 - `/auto-test 30 seconds` -> Longer test duration
 - `/auto-test spawning` -> Test until spawning occurs
 - `/auto-test until error` -> Run until an error happens
-- `/auto-test performance` -> Include FPS/performance metrics
 
 ## Steps
 
-1. Save the current scene (preserve state)
-2. Clear console logs
-3. Start profiler if performance test
-4. Enter play mode
-5. Wait for duration or condition
-6. Capture console output
-7. Stop play mode
-8. Analyze and report results
+1. Check console for pre-existing errors
+2. Enter play mode
+3. Wait for duration or condition
+4. Capture console output
+5. Stop play mode
+6. Analyze and report results
 
 ## Process
 
 ### Pre-Test Setup
-```
-1. manage_scene action="save" - Save current scene state
-2. manage_console action="clear" - Clear old logs
-3. manage_editor action="get_state" - Confirm ready state
-4. If performance test: manage_profiler action="start"
+```bash
+gamekit console --errors         # Check for pre-existing errors
+gamekit play status              # Confirm ready state
 ```
 
 ### Enter Play Mode
-```
-1. manage_editor action="play"
-2. Record start time
+```bash
+gamekit play start
+# Record start time
 ```
 
 ### Monitoring Loop
-```
-Every 1-2 seconds while playing:
-1. manage_console action="get" types=["error", "exception"] count=10
-2. If critical error found and not "until error" mode, may stop early
-3. Track elapsed time
-4. If performance mode: manage_profiler action="get_rendering_stats"
+```bash
+# Every few seconds while playing:
+gamekit console --errors
+# If critical error found and not "until error" mode, may stop early
+# Track elapsed time
 ```
 
 ### Exit Conditions
@@ -61,11 +55,9 @@ Stop when ANY of these occur:
 ```
 
 ### Stop and Collect
-```
-1. manage_editor action="stop" - Exit play mode
-2. manage_console action="get" types=["all"] - Get ALL logs
-3. If profiling: manage_profiler action="stop"
-4. If profiling: manage_profiler action="get_memory_stats"
+```bash
+gamekit play stop               # Exit play mode
+gamekit console                 # Get ALL logs
 ```
 
 ## Test Configurations
@@ -81,22 +73,7 @@ Pass criteria: No errors
 ```
 Duration: 30 seconds
 Checks: Errors, performance degradation, memory leaks
-Pass criteria: No errors, stable FPS
-```
-
-### Performance Test
-```
-Duration: 15 seconds
-Profiler: Enabled
-Checks: FPS, draw calls, memory allocation
-Reports: Min/Max/Avg FPS, bottlenecks
-```
-
-### Stress Test
-```
-Duration: 60 seconds
-Focus: Memory growth, performance over time
-Checks: GC allocations, frame drops
+Pass criteria: No errors, stable performance
 ```
 
 ## Output Report
@@ -118,12 +95,6 @@ Checks: GC allocations, frame drops
 
 ### Warnings
 [List warnings that might indicate issues]
-
-### Performance (if tested)
-- Average FPS: X
-- Min FPS: X (at timestamp)
-- Draw Calls: X
-- Memory: X MB
 
 ### Verification
 [What was confirmed working:]
@@ -171,5 +142,4 @@ When Claude makes changes, auto-test can verify:
 
 - Maximum runtime: 60 seconds (prevents infinite loops)
 - Auto-stop on repeated exceptions
-- Scene is saved before test (can recover)
 - Reports any scene changes during test

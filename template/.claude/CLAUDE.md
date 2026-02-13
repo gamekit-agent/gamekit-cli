@@ -8,6 +8,7 @@
 - [Project Structure](#project-structure)
 - [Multiplayer (Normcore)](#multiplayer-normcore)
 - [Autonomous Quality System](#autonomous-quality-system)
+- [gamekit CLI](#gamekit-cli)
 - [Technical Notes](#technical-notes-for-my-reference)
 - [Continuous Improvement](#continuous-improvement-process)
 
@@ -51,6 +52,14 @@ I don't just build things - I make sure they work:
 
 You'll only see the finished, working result.
 
+### I Use the gamekit CLI to Control Unity
+I interact with the Unity Editor through the `gamekit` command-line tool. This lets me:
+- Start/stop play mode and check for errors
+- Create, inspect, and modify GameObjects
+- Take screenshots for visual verification
+- Build the game for any platform
+- Read and write C# scripts directly
+
 ### I Use Specialized Skills
 I have knowledge of how to build common game elements:
 - Player characters with movement
@@ -68,7 +77,7 @@ I have knowledge of how to build common game elements:
 - **Scene awareness** - Track changes, enable rollback
 - **Self-verification** - Test and fix automatically
 - **Quality gates** - Ensure high quality before presenting
-- **Screenshots** - Capture game view for visual verification (see screenshotting.md)
+- **Screenshots** - Capture game view for visual verification
 
 ### I Delegate Complex Work
 For big tasks, I use helper agents:
@@ -217,9 +226,73 @@ I don't present work until it's genuinely good.
 
 ---
 
+## gamekit CLI
+
+I control Unity through the `gamekit` CLI. Here are the commands I use:
+
+### Play Mode & Console
+```bash
+gamekit play start                          # Enter play mode
+gamekit play stop                           # Exit play mode
+gamekit play status                         # Check if playing
+gamekit console --errors                    # Get error messages
+gamekit console --warnings                  # Get warnings
+gamekit console                             # Get all logs
+```
+
+### Scene & Hierarchy
+```bash
+gamekit hierarchy                           # Full scene tree
+gamekit hierarchy --name Player             # Filter by name
+gamekit hierarchy --component Camera        # Filter by component
+gamekit inspect Player                      # Component details
+gamekit inspect "Player/Camera"             # Nested path
+gamekit scene open MainScene                # Open a scene
+```
+
+### GameObjects
+```bash
+gamekit create Enemy                        # Create empty
+gamekit create Enemy --parent Level         # With parent
+gamekit destroy "Level/Enemy"               # Remove object
+gamekit transform Cube --position 0,3,0     # Set position
+gamekit transform Cube --scale 2,2,2        # Set scale
+gamekit add-component Player Rigidbody      # Add component
+gamekit set Player Rigidbody mass 2.5       # Set property
+```
+
+### Materials
+```bash
+gamekit material create Red                 # Create material
+gamekit material set Assets/Materials/Red.mat _Color 1,0,0,1
+gamekit material assign Assets/Materials/Red.mat Cube
+```
+
+### Prefabs & Assets
+```bash
+gamekit prefab create Player                # Save as prefab
+gamekit prefab instantiate Assets/Prefabs/Enemy.prefab
+gamekit refresh                             # Trigger recompile
+gamekit list scripts                        # List C# files
+gamekit list scenes                         # List scenes
+gamekit list prefabs                        # List prefabs
+```
+
+### Screenshots & Build
+```bash
+gamekit screenshot                          # Game view
+gamekit screenshot --scene                  # Scene view
+gamekit screenshot --camera Main            # Specific camera
+gamekit build --platform windows            # Build game
+gamekit settings                            # Show project settings
+gamekit test                                # Run unit tests
+```
+
+---
+
 ## Technical Notes (For My Reference)
 
-### Unity MCP Component Names
+### Unity Component Names
 Use short names: `Camera`, `Light`, `Rigidbody` - not `UnityEngine.Camera`
 
 ### Triggers Require Physics
@@ -231,10 +304,10 @@ Anything that spawns at runtime must be in `Resources/` folder.
 ### FBX Files Are NOT Prefabs (CRITICAL - AUTO-CONVERT)
 FBX/OBJ files cannot be loaded at runtime via `Resources.Load()`.
 **I AUTOMATICALLY convert them to prefabs without being asked:**
-1. Download FBX → Immediately convert to prefab
-2. Create temp object from FBX
-3. Save as prefab to `Resources/Prefabs/`
-4. Delete temp object, refresh assets
+1. Download FBX
+2. Create a GameObject from the FBX in the scene
+3. Run `gamekit prefab create TempConvert --output Assets/Resources/Prefabs/ModelName.prefab`
+4. Remove temp object, refresh assets
 5. Use PREFAB path in all code, never FBX path
 
 This is automatic behavior from the `using-3d-models` skill - user doesn't need to ask.
@@ -262,7 +335,7 @@ This is automatic behavior from the `using-3d-models` skill - user doesn't need 
    - New agent in `.claude/agents/`
    - Update to existing skill/command
 
-3. **Update technical notes** in this file if I learned something about Unity MCP.
+3. **Update technical notes** in this file if I learned something new.
 
 This way, every game-building session makes me better at Unity development.
 

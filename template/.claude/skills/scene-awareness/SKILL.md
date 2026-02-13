@@ -42,25 +42,35 @@ Automatically verify after:
 ## Pre-Change Capture Process
 
 ### Quick Capture (Default - Most Changes)
-```
-1. manage_scene action="get_hierarchy"
-   → Store object names, parent-child relationships
+```bash
+# 1. Get scene hierarchy
+gamekit hierarchy
+# → Store object names, parent-child relationships
 
-2. For key objects being modified:
-   manage_gameobject action="get_components" target="[name]"
-   → Store component list and key property values
+# 2. For key objects being modified:
+gamekit inspect [name]
+# → Store component list and key property values
 
-3. Note the capture in working memory:
-   "Pre-change state captured: [X objects, Y components noted]"
+# 3. Note the capture in working memory:
+# "Pre-change state captured: [X objects, Y components noted]"
 ```
 
 ### Full Capture (Major Changes)
-```
-1. manage_scene action="get_hierarchy"
-2. manage_console action="get" types=["error"] count=10
-3. manage_physics action="get_layer_names"
-4. For ALL modified objects: get full component state
-5. Take screenshot if visual changes expected
+```bash
+# 1. Get full hierarchy
+gamekit hierarchy
+
+# 2. Check for existing errors
+gamekit console --errors
+
+# 3. Get project settings (layers, physics, etc.)
+gamekit settings
+
+# 4. For ALL modified objects: get full component state
+gamekit inspect [each object]
+
+# 5. Take screenshot if visual changes expected
+gamekit screenshot
 ```
 
 ---
@@ -68,28 +78,40 @@ Automatically verify after:
 ## Post-Change Verification Process
 
 ### Quick Verify (Default)
-```
-1. manage_console action="get" types=["error", "exception"] count=5
-   → Check for new errors
+```bash
+# 1. Check for new errors
+gamekit console --errors
 
-2. If errors found:
-   - Analyze the error
-   - Attempt automatic fix
-   - If can't fix, report and offer rollback
+# 2. If errors found:
+#    - Analyze the error
+#    - Attempt automatic fix
+#    - If can't fix, report and offer rollback
 
-3. If no errors:
-   - Confirm change succeeded
-   - Note what changed
+# 3. If no errors:
+#    - Confirm change succeeded
+#    - Note what changed
 ```
 
 ### Full Verify (After Major Changes)
-```
-1. manage_console action="get" types=["all"] count=20
-2. manage_scene action="get_hierarchy" → Compare to pre-change
-3. Verify expected objects exist
-4. Verify expected components attached
-5. Take screenshot for visual verification
-6. Run quick auto-test (5 seconds)
+```bash
+# 1. Get all console output
+gamekit console
+
+# 2. Compare hierarchy to pre-change
+gamekit hierarchy
+
+# 3. Verify expected objects exist
+# 4. Verify expected components attached
+gamekit inspect [key objects]
+
+# 5. Take screenshot for visual verification
+gamekit screenshot
+
+# 6. Run quick auto-test (5 seconds)
+gamekit play start
+sleep 5
+gamekit console --errors
+gamekit play stop
 ```
 
 ---
@@ -102,7 +124,7 @@ Claude maintains mental model of:
 ```
 Changes this session:
 1. [Timestamp] Created "Enemy" GameObject
-2. [Timestamp] Modified PlayerMovement.cs: speed 5→10
+2. [Timestamp] Modified PlayerMovement.cs: speed 5->10
 3. [Timestamp] Added Rigidbody to "Coin"
 ...
 ```
@@ -134,8 +156,8 @@ BEFORE:
 2. Note what's being changed
 
 AFTER:
-1. Wait for Unity recompile (1-2 seconds)
-2. Check console for compile errors
+1. Run gamekit refresh (triggers recompile)
+2. Check console for compile errors: gamekit console --errors
 3. If errors: analyze and fix immediately
 4. If clean: note success
 ```
@@ -143,8 +165,8 @@ AFTER:
 ### GameObject Changes
 ```
 BEFORE:
-1. Get hierarchy snapshot
-2. Get components of affected objects
+1. gamekit hierarchy (snapshot)
+2. gamekit inspect [affected objects]
 
 AFTER:
 1. Verify objects exist/don't exist as expected
@@ -155,24 +177,22 @@ AFTER:
 ### Physics/Collision Changes
 ```
 BEFORE:
-1. Get layer names
-2. Get collision matrix
-3. Note current physics settings
+1. gamekit settings (get layer names, physics config)
+2. Note current physics settings
 
 AFTER:
 1. Verify layers configured
-2. Check collision matrix updated
-3. Quick play test to verify physics work
+2. Quick play test to verify physics work
 ```
 
 ### Visual Changes (Materials, UI, Positions)
 ```
 BEFORE:
-1. Take screenshot
+1. gamekit screenshot
 2. Note current visual state
 
 AFTER:
-1. Take screenshot
+1. gamekit screenshot
 2. Compare visually
 3. Verify changes look correct
 ```
@@ -182,16 +202,16 @@ AFTER:
 ## Integration with Other Systems
 
 ### With verify-changes Skill
-Scene awareness captures state → verify-changes tests functionality
+Scene awareness captures state -> verify-changes tests functionality
 
 ### With quality-gate Skill
-Scene awareness provides state data → quality-gate evaluates quality
+Scene awareness provides state data -> quality-gate evaluates quality
 
 ### With /rollback Command
-Scene awareness tracks changes → rollback uses that data to revert
+Scene awareness tracks changes -> rollback uses that data to revert
 
 ### With iterator Agent
-Scene awareness tracks progress → iterator knows what's been tried
+Scene awareness tracks progress -> iterator knows what's been tried
 
 ---
 
@@ -263,11 +283,11 @@ Changes complete and verified."
 | Situation | Action |
 |-----------|--------|
 | About to modify script | Read current version first |
-| About to change 3+ objects | Get hierarchy snapshot |
-| After any script change | Wait, check console |
-| After adding components | Verify with get_components |
-| After visual changes | Take screenshot |
-| Error detected | Analyze → Fix → Verify |
+| About to change 3+ objects | `gamekit hierarchy` snapshot |
+| After any script change | `gamekit refresh` then `gamekit console --errors` |
+| After adding components | Verify with `gamekit inspect` |
+| After visual changes | `gamekit screenshot` |
+| Error detected | Analyze -> Fix -> Verify |
 | User asks "what changed" | Report from change log |
 | User wants rollback | Use captured pre-state |
 
@@ -277,9 +297,9 @@ Changes complete and verified."
 
 Claude does NOT wait for user to ask for state capture. Every significant change includes:
 
-1. ✅ **Pre-capture** → Know what we're changing
-2. ✅ **Make change** → Do the actual modification
-3. ✅ **Post-verify** → Confirm it worked
-4. ✅ **Log change** → Track for rollback/reporting
+1. **Pre-capture** -> Know what we're changing
+2. **Make change** -> Do the actual modification
+3. **Post-verify** -> Confirm it worked
+4. **Log change** -> Track for rollback/reporting
 
 This enables confident iteration without fear of breaking things.

@@ -29,35 +29,37 @@ Run verification after:
 ## The Verify Loop
 
 ```
-┌─────────────────────────────────────────────────┐
-│  MAKE CHANGE                                    │
-└────────────────────┬────────────────────────────┘
-                     ▼
-┌─────────────────────────────────────────────────┐
-│  QUICK TEST (5 seconds play mode)               │
-│  - Enter play mode                              │
-│  - Wait 5 seconds                               │
-│  - Check console for errors                     │
-└────────────────────┬────────────────────────────┘
-                     ▼
-              ┌──────┴──────┐
-              │ Errors?     │
-              └──────┬──────┘
-         No ◄────────┴────────► Yes
-          │                      │
-          ▼                      ▼
-┌─────────────────┐    ┌─────────────────────────┐
-│ VERIFIED ✓      │    │ ANALYZE & FIX           │
-│ Move to next    │    │ - Read error message    │
-│ task            │    │ - Identify root cause   │
-│                 │    │ - Apply fix             │
-└─────────────────┘    └───────────┬─────────────┘
-                                   │
-                                   ▼
-                       ┌───────────────────────┐
-                       │ Loop back to TEST     │
-                       │ (max 3 attempts)      │
-                       └───────────────────────┘
++---------------------------------------------------+
+|  MAKE CHANGE                                      |
++-------------------------+-------------------------+
+                          |
+                          v
++---------------------------------------------------+
+|  QUICK TEST (5 seconds play mode)                 |
+|  - Enter play mode                                |
+|  - Wait 5 seconds                                 |
+|  - Check console for errors                       |
++-------------------------+-------------------------+
+                          |
+                          v
+                    +-----+-----+
+                    | Errors?   |
+                    +-----+-----+
+         No <-------------+-------------> Yes
+          |                               |
+          v                               v
++-----------------+    +-------------------------+
+| VERIFIED        |    | ANALYZE & FIX           |
+| Move to next    |    | - Read error message    |
+| task            |    | - Identify root cause   |
+|                 |    | - Apply fix             |
++-----------------+    +-----------+-------------+
+                                   |
+                                   v
+                       +-----------------------+
+                       | Loop back to TEST     |
+                       | (max 3 attempts)      |
+                       +-----------------------+
 ```
 
 ---
@@ -65,38 +67,37 @@ Run verification after:
 ## Verification Process
 
 ### Step 1: Quick Console Check
-```
-manage_console action="clear"
-manage_console action="get" types=["error", "exception"] count=10
+```bash
+gamekit console --errors
 ```
 
-If compile errors exist before even playing → fix those first.
+If compile errors exist before even playing -> fix those first.
 
 ### Step 2: Enter Play Mode Test
-```
-manage_editor action="play"
-# Wait 5 seconds
-manage_console action="get" types=["error", "exception"] count=20
-manage_editor action="stop"
+```bash
+gamekit play start
+sleep 5
+gamekit console --errors
+gamekit play stop
 ```
 
 ### Step 3: Analyze Results
 ```
 IF no errors:
-  → Verification passed
-  → Report success briefly
-  → Continue to next task
+  -> Verification passed
+  -> Report success briefly
+  -> Continue to next task
 
 IF errors found:
-  → Analyze each error
-  → Determine root cause
-  → Apply fix
-  → Return to Step 1 (max 3 loops)
+  -> Analyze each error
+  -> Determine root cause
+  -> Apply fix
+  -> Return to Step 1 (max 3 loops)
 
 IF 3 attempts failed:
-  → Report the persistent issue
-  → Ask user for guidance OR
-  → Rollback to last known good state
+  -> Report the persistent issue
+  -> Ask user for guidance OR
+  -> Rollback to last known good state
 ```
 
 ---
@@ -130,7 +131,7 @@ Analysis:
 2. Verify it was added
 
 Fix:
-- Add the missing component via MCP
+- Add the missing component: gamekit add-component Player <Type>
 ```
 
 ### Compile Errors
@@ -151,9 +152,9 @@ Symptom: Objects pass through each other (no error in console)
 Detection: Requires play-testing or user report
 
 Fix process:
-1. Check Colliders exist
+1. Check Colliders exist: gamekit inspect [object]
 2. Check at least one has Rigidbody
-3. Check layer collision matrix
+3. Check layer collision matrix: gamekit settings
 4. Check isTrigger settings
 ```
 
@@ -218,7 +219,6 @@ using System.Collections.Generic;
 - Compile error check
 - 30 second play test
 - Console check (all types)
-- Performance check
 - Visual screenshot
 - **Use for:** Before presenting to user, major features
 
@@ -229,20 +229,20 @@ using System.Collections.Generic;
 ### With scene-awareness Skill
 ```
 scene-awareness captures pre-state
-→ verify-changes tests post-state
-→ If broken, can rollback using scene-awareness data
+-> verify-changes tests post-state
+-> If broken, can rollback using scene-awareness data
 ```
 
 ### With quality-gate Skill
 ```
 verify-changes ensures no errors
-→ quality-gate then checks quality level
+-> quality-gate then checks quality level
 ```
 
 ### With code-debugger Agent
 ```
 If verify-changes can't fix after 3 attempts
-→ Delegate to code-debugger agent for deep analysis
+-> Delegate to code-debugger agent for deep analysis
 ```
 
 ---
@@ -307,7 +307,7 @@ C) Show you the code to debug together"
 | Script modified | Quick verify (5s test) |
 | New feature added | Standard verify (15s test) |
 | Before telling user "done" | Full verify (30s test) |
-| Error found | Analyze → Fix → Re-test |
+| Error found | Analyze -> Fix -> Re-test |
 | 3 failed fixes | Rollback OR escalate |
 | User reports issue | Full verify + investigate |
 
@@ -317,10 +317,10 @@ C) Show you the code to debug together"
 
 Claude does NOT ask "should I test this?" - testing happens automatically:
 
-1. ✅ **Change made** → Immediately test
-2. ✅ **Error found** → Immediately fix
-3. ✅ **Fix applied** → Immediately re-test
-4. ✅ **Verified clean** → Then continue
-5. ✅ **Can't fix** → Report and get guidance
+1. **Change made** -> Immediately test
+2. **Error found** -> Immediately fix
+3. **Fix applied** -> Immediately re-test
+4. **Verified clean** -> Then continue
+5. **Can't fix** -> Report and get guidance
 
 **Never leave broken code behind. Every change must be verified before moving on.**

@@ -8,7 +8,7 @@ Add Normcore multiplayer networking to your game.
 
 ## What This Command Does
 
-1. Installs the Normcore package
+1. Sets up the Normcore package
 2. Creates a Realtime component in the scene
 3. Explains how to make objects sync between players
 
@@ -16,11 +16,14 @@ Add Normcore multiplayer networking to your game.
 
 ### Step 1: Add Normcore Package
 
-First, add the Normcore scoped registry and package:
+The Normcore package needs to be added via Unity's Package Manager. Guide the user:
 
-```bash
-# The package manager will handle this
-mcp__unity-mcp__manage_packagemanager action="add_package" package_id="com.normalvr.normcore"
+```
+To add Normcore:
+1. Open Unity > Window > Package Manager
+2. Click "+" > "Add package by name"
+3. Enter: com.normalvr.normcore
+4. Click Add
 ```
 
 **Note:** If this fails with XR errors, you may need to install XR modules first via Unity Hub.
@@ -29,9 +32,9 @@ mcp__unity-mcp__manage_packagemanager action="add_package" package_id="com.norma
 
 Create a GameObject with the Realtime component:
 
-```
-mcp__unity-mcp__manage_gameobject action="create" name="Realtime"
-mcp__unity-mcp__manage_gameobject action="add_component" target="Realtime" component_name="Normal.Realtime.Realtime"
+```bash
+gamekit create Realtime
+gamekit add-component Realtime "Normal.Realtime.Realtime"
 ```
 
 ### Step 3: Configure App Key
@@ -55,9 +58,9 @@ For any object that should sync between players:
 3. For custom data, create a `RealtimeModel`
 
 Example for player:
-```
-mcp__unity-mcp__manage_gameobject action="add_component" target="Player" component_name="Normal.Realtime.RealtimeView"
-mcp__unity-mcp__manage_gameobject action="add_component" target="Player" component_name="Normal.Realtime.RealtimeTransform"
+```bash
+gamekit add-component Player "Normal.Realtime.RealtimeView"
+gamekit add-component Player "Normal.Realtime.RealtimeTransform"
 ```
 
 ### Step 5: Move Prefabs to Resources

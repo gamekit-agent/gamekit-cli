@@ -36,8 +36,8 @@ Reusable code patterns and techniques:
 
 <!-- Add patterns with code examples -->
 
-## Unity MCP Notes
+## Unity / gamekit Notes
 
-Technical discoveries about Unity MCP:
+Technical discoveries about Unity and the gamekit CLI:
 
 <!-- Add technical notes here -->

@@ -4,48 +4,31 @@ description: Capture game view screenshots for visual verification
 
 # Screenshot Skill
 
-## Working Screenshot Procedure (TESTED & VERIFIED)
+## Working Screenshot Procedure
 
-This procedure successfully captures screenshots from the Unity game view.
+This procedure captures screenshots from the Unity game view using the `gamekit` CLI.
 
 ---
 
 ## The Exact Working Steps
 
-### Step 1: Ensure Play Mode
-```
-mcp__unity-mcp__manage_editor action="play"
-```
-The game must be running to capture what the player sees.
-
-### Step 2: Wait for World to Render
+### Step 1: Capture Screenshot
 ```bash
-sleep 2-3  # Give time for chunks/objects to generate
-```
-Important: If the world uses procedural generation, wait for it to complete.
+# Game view (default)
+gamekit screenshot
 
-### Step 3: Execute Screenshot Menu Item
-```
-mcp__unity-mcp__manage_menu_item
-  action="execute"
-  menu_path="Tools/Capture Screenshot"
-```
-This triggers the custom screenshot tool that saves to `Assets/Screenshots/`.
+# Scene view
+gamekit screenshot --scene
 
-### Step 4: Wait for File to Write
-```bash
-sleep 1-2  # Give Unity time to write the file
+# From a specific camera
+gamekit screenshot --camera MainCamera
 ```
 
-### Step 5: Find the Latest Screenshot
-```bash
-ls -lt Assets/Screenshots/*.png | head -1
-```
-Screenshots are named with timestamps like `screenshot_20260116_145528.png`.
+The command returns a JSON response with the screenshot file path.
 
-### Step 6: Read and Analyze the Image
+### Step 2: Read and Analyze the Image
 ```
-Read file_path="Assets/Screenshots/screenshot_YYYYMMDD_HHMMSS.png"
+Read file_path="<path from gamekit screenshot output>"
 ```
 Claude can see the image content and analyze it visually.
 
@@ -53,57 +36,40 @@ Claude can see the image content and analyze it visually.
 
 ## Complete Example
 
-```
-# 1. Start play mode
-mcp__unity-mcp__manage_editor action="play"
-
-# 2. Wait for world to generate
-Bash: sleep 3
-
-# 3. Capture screenshot
-mcp__unity-mcp__manage_menu_item action="execute" menu_path="Tools/Capture Screenshot"
-
-# 4. Wait and find the file
-Bash: sleep 2 && ls -lt Assets/Screenshots/*.png | head -1
-
-# 5. Read the screenshot
-Read: Assets/Screenshots/screenshot_20260116_XXXXXX.png
-
-# 6. Analyze what you see and report to user
-```
-
----
-
-## Why This Works
-
-1. **Menu item approach**: Using `Tools/Capture Screenshot` via `manage_menu_item` is more reliable than trying to call `ScreenCapture.CaptureScreenshot()` directly.
-
-2. **Timestamp naming**: Screenshots auto-name with timestamps, so we use `ls -lt | head -1` to find the newest one.
-
-3. **Read tool sees images**: Claude's Read tool can interpret PNG images and describe what it sees.
-
-4. **Screenshots folder**: Files save to `Assets/Screenshots/` which must exist (create with `mkdir -p` if needed).
-
----
-
-## Troubleshooting
-
-### Screenshot not created
-- Ensure `Assets/Screenshots/` folder exists
-- Make sure game is in play mode
-- Try executing the menu item twice
-- Check Unity console for errors
-
-### Same screenshot appearing
-- Check timestamps carefully - new files have newer timestamps
-- Wait longer between screenshot attempts
-- The file might still be writing
-
-### Can't find screenshot
 ```bash
-# List all recent screenshots with timestamps
-ls -la Assets/Screenshots/*.png
+# 1. Capture screenshot (works in both edit and play mode)
+gamekit screenshot
+
+# 2. Read the screenshot file path from the JSON output
+# 3. Read the screenshot using Claude's Read tool
+# 4. Analyze what you see and report to user
 ```
+
+### Play Mode Screenshot
+```bash
+# Start play mode first if needed
+gamekit play start
+sleep 2
+
+# Capture what the player sees
+gamekit screenshot
+
+# Read and analyze the image
+# Then stop play mode
+gamekit play stop
+```
+
+---
+
+## Options
+
+| Flag | Purpose |
+|------|---------|
+| `--scene` | Capture Scene view instead of Game view |
+| `--camera <name>` | Capture from a specific camera |
+| `--width <pixels>` | Screenshot width (default: 1920) |
+| `--height <pixels>` | Screenshot height (default: 1080) |
+| `--output <path>` | Save to a specific file path |
 
 ---
 
@@ -123,13 +89,3 @@ This skill works well with:
 - **quality-gate**: Visual verification step
 - **verify-changes**: Capture before/after
 - **scene-awareness**: Document visual state
-
----
-
-## Key Insight
-
-The screenshot menu item (`Tools/Capture Screenshot`) is a **custom Editor script** in this project. It's more reliable than Unity's built-in `ScreenCapture` API because it handles:
-- Correct game view targeting
-- Proper file path handling
-- Timestamp-based naming
-- Asset database refresh

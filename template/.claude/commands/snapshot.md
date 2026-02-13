@@ -19,58 +19,55 @@ Examples:
 
 1. Get the scene hierarchy (all GameObjects)
 2. Gather component information for key objects
-3. Check physics layer configuration
+3. Check project settings (physics layers, etc.)
 4. Identify cameras and their setup
 5. Check UI canvas state
-6. Report lighting/rendering info
-7. Present organized summary
+6. Present organized summary
 
 ## Process
 
 ### Scene Hierarchy
-```
-1. manage_scene action="get_hierarchy" - Get full hierarchy tree
-2. Parse and organize by category:
-   - Players (tag: Player)
-   - Enemies (tag: Enemy)
-   - Collectibles (tag: Pickup, Collectible)
-   - Environment (floors, walls, platforms)
-   - UI (Canvas objects)
-   - Cameras
-   - Lights
-   - Managers (singletons, spawners)
+```bash
+# Get full hierarchy tree
+gamekit hierarchy
+
+# Parse and organize by category:
+#   - Players (tag: Player)
+#   - Enemies (tag: Enemy)
+#   - Collectibles (tag: Pickup, Collectible)
+#   - Environment (floors, walls, platforms)
+#   - UI (Canvas objects)
+#   - Cameras
+#   - Lights
+#   - Managers (singletons, spawners)
 ```
 
 ### Key Object Details
-```
-For important objects (Player, main Camera, key managers):
-1. manage_gameobject action="get_components" target="[name]"
-2. Record: Transform, Rigidbody settings, Collider setup, custom scripts
+```bash
+# For important objects (Player, main Camera, key managers):
+gamekit inspect Player
+gamekit inspect "Main Camera"
+# Record: Transform, Rigidbody settings, Collider setup, custom scripts
 ```
 
-### Physics State
-```
-1. manage_physics action="get_layer_names" - Get all layers
-2. manage_physics action="get_collision_matrix" - Get what collides with what
-3. manage_physics action="get_3d_settings" - Global physics settings
+### Project Settings
+```bash
+# Get layers, physics, tags, quality settings
+gamekit settings
 ```
 
 ### Camera Setup
-```
-1. manage_gameobject action="find" search_term="Camera" search_method="by_component" find_all=true
-2. For each camera: get position, projection, follow target
+```bash
+# Find all cameras
+gamekit hierarchy --component Camera
+# For each camera: inspect position, projection, follow target
 ```
 
 ### UI State
-```
-1. manage_gameobject action="find" search_term="Canvas" search_method="by_component" find_all=true
-2. List UI elements: health bars, score displays, menus
-```
-
-### Lighting/Rendering
-```
-1. manage_rendering action="get_lighting_info"
-2. manage_rendering action="get_rendering_info"
+```bash
+# Find all canvases
+gamekit hierarchy --component Canvas
+# List UI elements: health bars, score displays, menus
 ```
 
 ## Output Format
