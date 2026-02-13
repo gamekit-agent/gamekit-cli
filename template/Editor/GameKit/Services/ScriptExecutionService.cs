@@ -63,11 +63,39 @@ namespace GameKit.Services
                 _referenceAssemblyMethod = evaluatorType.GetMethod("ReferenceAssembly",
                     new[] { typeof(Assembly) });
 
-                // Reference key assemblies
+                // Reference core assemblies
                 _referenceAssemblyMethod.Invoke(_evaluator, new object[] { typeof(object).Assembly });
                 _referenceAssemblyMethod.Invoke(_evaluator, new object[] { typeof(System.Linq.Enumerable).Assembly });
-                _referenceAssemblyMethod.Invoke(_evaluator, new object[] { typeof(UnityEngine.Debug).Assembly });
-                _referenceAssemblyMethod.Invoke(_evaluator, new object[] { typeof(UnityEditor.EditorApplication).Assembly });
+
+                // Reference all Unity module assemblies and user assemblies.
+                // This makes Physics types, UI, Audio, Animation, etc. available,
+                // as well as user MonoBehaviours from Assembly-CSharp.
+                var referenced = new System.Collections.Generic.HashSet<string>();
+                referenced.Add(typeof(object).Assembly.GetName().Name);
+                referenced.Add(typeof(System.Linq.Enumerable).Assembly.GetName().Name);
+
+                foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    try
+                    {
+                        var name = asm.GetName().Name;
+                        if (asm.IsDynamic || referenced.Contains(name)) continue;
+
+                        // Reference Unity modules, editor assemblies, and user code
+                        if (name.StartsWith("UnityEngine") ||
+                            name.StartsWith("UnityEditor") ||
+                            name == "Assembly-CSharp" ||
+                            name == "Assembly-CSharp-Editor")
+                        {
+                            _referenceAssemblyMethod.Invoke(_evaluator, new object[] { asm });
+                            referenced.Add(name);
+                        }
+                    }
+                    catch
+                    {
+                        // Skip assemblies that fail to reference
+                    }
+                }
 
                 // Pre-import common namespaces
                 _runMethod.Invoke(_evaluator, new object[] { "using System;" });

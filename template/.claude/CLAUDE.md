@@ -284,6 +284,7 @@ gamekit run-script "Debug.Log(1+1)"                       # Evaluate expression
 gamekit run-script "EditorUtility.RequestScriptReload()"   # Force domain reload
 gamekit run-script "Selection.activeGameObject.name"       # Query editor state
 ```
+**Note:** The last expression's value becomes the `result` field. Do not use `return` — it causes a compile error. All Unity module types (Physics, Audio, UI, etc.) and user MonoBehaviours from Assembly-CSharp are available.
 
 ### Scene Save
 ```bash
@@ -330,6 +331,31 @@ This is automatic behavior from the `using-3d-models` skill - user doesn't need 
 2. OpenGameArt.org - Community assets
 3. Polyhaven.com - Textures and HDRIs
 4. Mixamo.com - Animated characters
+
+---
+
+## Reporting Issues & Suggesting Improvements
+
+**Whenever you encounter a problem with a `gamekit` command or find a workflow that could be better, log it to `issues.md` in the project root.** Do this proactively — don't wait to be asked.
+
+**What to report:**
+- `gamekit` commands that fail, return unexpected results, or require workarounds
+- Missing commands or features that would have made your task easier
+- Patterns you find yourself repeating that could be automated
+- Confusing error messages or missing error handling
+
+**Format for `issues.md`:**
+```markdown
+## Issue: [Short title]
+**Severity:** High / Medium / Low
+**Command:** `gamekit [command]` (if applicable)
+**Problem:** What happened
+**Expected:** What should have happened
+**Workaround:** How you got around it (if any)
+**Suggested Fix:** Your idea for how to fix it
+```
+
+Append new issues — don't overwrite previous ones. This file is read by the gamekit developers to prioritize improvements.
 
 ---
 

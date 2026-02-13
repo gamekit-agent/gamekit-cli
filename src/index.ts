@@ -82,7 +82,7 @@ program
 // Run Script - execute arbitrary C# in Unity Editor
 program
   .command('run-script <code>')
-  .description('Execute C# code in the Unity Editor')
+  .description('Execute C# code in the Unity Editor (last expression value becomes result; do not use return)')
   .action(async (code: string) => {
     try {
       await runScript(code, program.opts());
