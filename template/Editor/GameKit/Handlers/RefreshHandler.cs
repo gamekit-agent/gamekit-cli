@@ -1,3 +1,5 @@
+using System.IO;
+using System.Linq;
 using System.Net;
 using GameKit.Models;
 using GameKit.Services;
@@ -19,11 +21,33 @@ namespace GameKit.Handlers
             }
 
             var (hasErrors, errors) = CompilationService.GetLastResults();
+
+            if (!hasErrors && ScriptsExist())
+            {
+                var assemblyCSharpPath = Path.Combine("Library", "ScriptAssemblies", "Assembly-CSharp.dll");
+                if (!File.Exists(assemblyCSharpPath))
+                {
+                    return ApiResponse.Success(new
+                    {
+                        status = "error",
+                        errors,
+                        missingAssembly = true,
+                        message = "Assembly-CSharp.dll was not produced. Check for package or reference errors."
+                    });
+                }
+            }
+
             return ApiResponse.Success(new
             {
                 status = hasErrors ? "error" : "success",
                 errors
             });
+        }
+
+        private static bool ScriptsExist()
+        {
+            if (!Directory.Exists("Assets")) return false;
+            return Directory.GetFiles("Assets", "*.cs", SearchOption.AllDirectories).Any();
         }
     }
 }

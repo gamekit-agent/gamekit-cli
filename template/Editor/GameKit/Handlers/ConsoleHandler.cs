@@ -14,7 +14,10 @@ namespace GameKit.Handlers
         public static ApiResponse Handle(HttpListenerRequest request)
         {
             var severity = request.QueryString["severity"];
-            var result = LogService.GetEntries(severity);
+            int limit = 0;
+            int.TryParse(request.QueryString["limit"], out limit);
+
+            var result = LogService.GetEntries(severity, limit);
 
             return ApiResponse.Success(new
             {

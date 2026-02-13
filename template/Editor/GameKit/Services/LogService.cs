@@ -73,7 +73,7 @@ namespace GameKit.Services
             }
         }
 
-        public static LogQueryResult GetEntries(string severityFilter = null)
+        public static LogQueryResult GetEntries(string severityFilter = null, int limit = 0)
         {
             var entries = new List<LogEntry>();
 
@@ -89,6 +89,12 @@ namespace GameKit.Services
                     continue;
 
                 entries.Add(entry);
+            }
+
+            // When limit is set, return only the most recent N entries
+            if (limit > 0 && entries.Count > limit)
+            {
+                entries = entries.GetRange(entries.Count - limit, limit);
             }
 
             int droppedCount = _totalCount > _buffer.Length ? _totalCount - _buffer.Length : 0;

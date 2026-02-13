@@ -4,11 +4,19 @@ using System.Net;
 using GameKit.Models;
 using GameKit.Services;
 using Newtonsoft.Json.Linq;
+using UnityEditor.SceneManagement;
 
 namespace GameKit.Handlers
 {
     public static class SceneHandler
     {
+        public static ApiResponse HandleSave(HttpListenerRequest request)
+        {
+            var scene = EditorSceneManager.GetActiveScene();
+            EditorSceneManager.SaveScene(scene);
+            return ApiResponse.Success(new { scene = scene.name, path = scene.path });
+        }
+
         public static ApiResponse HandleList(HttpListenerRequest request)
         {
             var scenes = SceneService.ListScenes();

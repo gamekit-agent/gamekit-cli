@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Compilation;
 using UnityEngine;
 
 namespace GameKit.Utils
@@ -8,6 +9,12 @@ namespace GameKit.Utils
     public static class TypeResolver
     {
         private static Dictionary<string, Type> _typeCache;
+
+        [InitializeOnLoadMethod]
+        private static void Init()
+        {
+            CompilationPipeline.compilationFinished += _ => _typeCache = null;
+        }
 
         private static void EnsureCache()
         {

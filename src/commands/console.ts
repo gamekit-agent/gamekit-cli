@@ -23,6 +23,7 @@ export interface ConsoleOptions extends OutputOptions {
   warnings?: boolean;
   info?: boolean;
   follow?: boolean;
+  limit?: string;
 }
 
 export async function consoleCommand(options: ConsoleOptions): Promise<void> {
@@ -39,7 +40,10 @@ export async function consoleCommand(options: ConsoleOptions): Promise<void> {
   else if (options.warnings) severity = 'warning';
   else if (options.info) severity = 'info';
 
-  const query = severity ? `?severity=${severity}` : '';
+  const params = new URLSearchParams();
+  if (severity) params.set('severity', severity);
+  if (options.limit) params.set('limit', options.limit);
+  const query = params.toString() ? `?${params.toString()}` : '';
   const result = await request<ConsoleResult>(info.port, 'GET', `/console${query}`);
 
   // JSON output to stdout

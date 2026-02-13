@@ -63,4 +63,22 @@ export function registerSceneCommand(program: Command): void {
         throw error;
       }
     });
+
+  scene
+    .command('save')
+    .description('Save the active scene')
+    .action(async () => {
+      try {
+        const opts = program.opts() as OutputOptions;
+        const info = await getConnection(process.cwd());
+        const result = await request<{ scene: string; path: string }>(info.port, 'POST', '/scene/save');
+        outputSuccess(result, opts);
+        logSuccess(`Saved scene: ${result.scene} (${result.path})`);
+      } catch (error) {
+        if (error instanceof GameKitError) {
+          outputError(error.code, error.message);
+        }
+        throw error;
+      }
+    });
 }

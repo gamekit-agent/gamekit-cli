@@ -94,6 +94,11 @@ export function ensureRequiredPackages(projectPath: string): void {
     modified = true;
   }
 
+  if (!manifest.dependencies['com.unity.ugui']) {
+    manifest.dependencies['com.unity.ugui'] = '2.0.0';
+    modified = true;
+  }
+
   if (modified) {
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
   }
