@@ -1,45 +1,98 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
-using Mono.CSharp;
 using UnityEngine;
 
 namespace GameKit.Services
 {
+    /// <summary>
+    /// Executes arbitrary C# code using Mono.CSharp.Evaluator via reflection.
+    /// Reflection avoids a compile-time dependency on Mono.CSharp.dll which
+    /// isn't auto-referenced by Unity's assembly definition system.
+    /// </summary>
     public static class ScriptExecutionService
     {
-        private static Evaluator _evaluator;
+        private static object _evaluator;
+        private static MethodInfo _evaluateMethod;
+        private static MethodInfo _runMethod;
+        private static MethodInfo _referenceAssemblyMethod;
         private static StringBuilder _reportOutput;
+        private static bool _initFailed;
+        private static string _initError;
 
         private static void EnsureEvaluator()
         {
-            if (_evaluator != null) return;
+            if (_evaluator != null || _initFailed) return;
 
-            _reportOutput = new StringBuilder();
-            var reportWriter = new StringWriter(_reportOutput);
+            try
+            {
+                // Load Mono.CSharp.dll from Unity's Mono installation
+                var monoPath = Path.Combine(
+                    Path.GetDirectoryName(typeof(object).Assembly.Location),
+                    "Mono.CSharp.dll"
+                );
 
-            var settings = new CompilerSettings();
-            var report = new StreamReportPrinter(reportWriter);
-            var context = new CompilerContext(settings, report);
-            _evaluator = new Evaluator(context);
+                if (!File.Exists(monoPath))
+                {
+                    _initFailed = true;
+                    _initError = $"Mono.CSharp.dll not found at: {monoPath}";
+                    return;
+                }
 
-            // Reference key assemblies
-            _evaluator.ReferenceAssembly(typeof(object).Assembly);
-            _evaluator.ReferenceAssembly(typeof(System.Linq.Enumerable).Assembly);
-            _evaluator.ReferenceAssembly(typeof(UnityEngine.Debug).Assembly);
-            _evaluator.ReferenceAssembly(typeof(UnityEditor.EditorApplication).Assembly);
+                var monoCSharp = Assembly.LoadFrom(monoPath);
 
-            // Pre-import common namespaces
-            _evaluator.Run("using System;");
-            _evaluator.Run("using System.Linq;");
-            _evaluator.Run("using System.Collections.Generic;");
-            _evaluator.Run("using UnityEngine;");
-            _evaluator.Run("using UnityEditor;");
+                var settingsType = monoCSharp.GetType("Mono.CSharp.CompilerSettings");
+                var reporterType = monoCSharp.GetType("Mono.CSharp.StreamReportPrinter");
+                var contextType = monoCSharp.GetType("Mono.CSharp.CompilerContext");
+                var evaluatorType = monoCSharp.GetType("Mono.CSharp.Evaluator");
+
+                _reportOutput = new StringBuilder();
+                var reportWriter = new StringWriter(_reportOutput);
+
+                var settings = Activator.CreateInstance(settingsType);
+                var reporter = Activator.CreateInstance(reporterType, reportWriter);
+                var context = Activator.CreateInstance(contextType, settings, reporter);
+                _evaluator = Activator.CreateInstance(evaluatorType, context);
+
+                _evaluateMethod = evaluatorType.GetMethod("Evaluate", new[]
+                {
+                    typeof(string), typeof(object).MakeByRefType(), typeof(bool).MakeByRefType()
+                });
+                _runMethod = evaluatorType.GetMethod("Run", new[] { typeof(string) });
+                _referenceAssemblyMethod = evaluatorType.GetMethod("ReferenceAssembly",
+                    new[] { typeof(Assembly) });
+
+                // Reference key assemblies
+                _referenceAssemblyMethod.Invoke(_evaluator, new object[] { typeof(object).Assembly });
+                _referenceAssemblyMethod.Invoke(_evaluator, new object[] { typeof(System.Linq.Enumerable).Assembly });
+                _referenceAssemblyMethod.Invoke(_evaluator, new object[] { typeof(UnityEngine.Debug).Assembly });
+                _referenceAssemblyMethod.Invoke(_evaluator, new object[] { typeof(UnityEditor.EditorApplication).Assembly });
+
+                // Pre-import common namespaces
+                _runMethod.Invoke(_evaluator, new object[] { "using System;" });
+                _runMethod.Invoke(_evaluator, new object[] { "using System.Linq;" });
+                _runMethod.Invoke(_evaluator, new object[] { "using System.Collections.Generic;" });
+                _runMethod.Invoke(_evaluator, new object[] { "using UnityEngine;" });
+                _runMethod.Invoke(_evaluator, new object[] { "using UnityEditor;" });
+            }
+            catch (Exception ex)
+            {
+                _initFailed = true;
+                _initError = $"Failed to initialize Mono.CSharp evaluator: {ex.Message}";
+                _evaluator = null;
+            }
         }
 
         public static ScriptResult Execute(string code)
         {
             EnsureEvaluator();
+
+            if (_initFailed)
+            {
+                return new ScriptResult { output = "", result = null, error = _initError };
+            }
+
             _reportOutput.Clear();
 
             var output = new StringBuilder();
@@ -54,15 +107,13 @@ namespace GameKit.Services
 
             try
             {
-                object result;
-                bool resultSet;
-
-                string error = _evaluator.Evaluate(code, out result, out resultSet);
+                var evalArgs = new object[] { code, null, false };
+                var error = (string)_evaluateMethod.Invoke(_evaluator, evalArgs);
 
                 // If Evaluate returned a partial/error string, try Run instead
                 if (error != null)
                 {
-                    _evaluator.Run(code);
+                    _runMethod.Invoke(_evaluator, new object[] { code });
                     return new ScriptResult
                     {
                         output = output.ToString(),
@@ -83,11 +134,23 @@ namespace GameKit.Services
                     };
                 }
 
+                var resultSet = (bool)evalArgs[2];
+                var result = evalArgs[1];
+
                 return new ScriptResult
                 {
                     output = output.ToString(),
                     result = resultSet ? (result?.ToString()) : null,
                     error = null
+                };
+            }
+            catch (TargetInvocationException ex)
+            {
+                return new ScriptResult
+                {
+                    output = output.ToString(),
+                    result = null,
+                    error = ex.InnerException?.Message ?? ex.Message
                 };
             }
             catch (Exception ex)
@@ -108,6 +171,8 @@ namespace GameKit.Services
         public static void Reset()
         {
             _evaluator = null;
+            _initFailed = false;
+            _initError = null;
         }
     }
 
