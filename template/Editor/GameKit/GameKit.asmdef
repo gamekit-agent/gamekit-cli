@@ -1,7 +1,9 @@
 {
     "name": "GameKit",
     "rootNamespace": "GameKit",
-    "references": [],
+    "references": [
+        "UnityEditor.TestRunner"
+    ],
     "includePlatforms": [
         "Editor"
     ],

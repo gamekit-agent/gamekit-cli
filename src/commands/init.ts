@@ -72,6 +72,29 @@ export function addGameKitToGitignore(projectPath: string): void {
 }
 
 /**
+ * Ensure required Unity packages are present in Packages/manifest.json.
+ * Adds com.unity.nuget.newtonsoft-json if missing (needed by GameKit C# code).
+ */
+export function ensureRequiredPackages(projectPath: string): void {
+  const manifestPath = path.join(projectPath, 'Packages', 'manifest.json');
+  if (!fs.existsSync(manifestPath)) return;
+
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+  if (!manifest.dependencies) return;
+
+  let modified = false;
+
+  if (!manifest.dependencies['com.unity.nuget.newtonsoft-json']) {
+    manifest.dependencies['com.unity.nuget.newtonsoft-json'] = '3.2.1';
+    modified = true;
+  }
+
+  if (modified) {
+    fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
+  }
+}
+
+/**
  * Initialize an existing Unity project with Claude Code support
  */
 async function initExistingProject(projectPath: string): Promise<void> {
@@ -146,7 +169,20 @@ async function initExistingProject(projectPath: string): Promise<void> {
     process.exit(1);
   }
 
-  // Step 3: Configure project (add .gamekit/ to .gitignore)
+  // Step 3: Ensure required Unity packages
+  spinner.start('Checking Unity package dependencies...');
+  try {
+    ensureRequiredPackages(projectPath);
+    spinner.succeed('Package dependencies verified');
+  } catch (error) {
+    spinner.fail('Failed to verify package dependencies');
+    if (error instanceof Error) {
+      console.log(chalk.red(`Error: ${error.message}`));
+    }
+    process.exit(1);
+  }
+
+  // Step 4: Configure project (add .gamekit/ to .gitignore)
   spinner.start('Configuring project...');
   try {
     addGameKitToGitignore(projectPath);
@@ -278,7 +314,20 @@ async function createNewProject(): Promise<void> {
     process.exit(1);
   }
 
-  // Step 6: Configure project (add .gamekit/ to .gitignore)
+  // Step 6: Ensure required Unity packages
+  spinner.start('Checking Unity package dependencies...');
+  try {
+    ensureRequiredPackages(projectPath);
+    spinner.succeed('Package dependencies verified');
+  } catch (error) {
+    spinner.fail('Failed to verify package dependencies');
+    if (error instanceof Error) {
+      console.log(chalk.red(`Error: ${error.message}`));
+    }
+    process.exit(1);
+  }
+
+  // Step 7: Configure project (add .gamekit/ to .gitignore)
   spinner.start('Configuring project...');
   try {
     addGameKitToGitignore(projectPath);
@@ -291,7 +340,7 @@ async function createNewProject(): Promise<void> {
     process.exit(1);
   }
 
-  // Step 7: Open Unity
+  // Step 8: Open Unity
   spinner.start('Opening Unity...');
   try {
     openUnityProject(selectedInstall.path, projectPath);
