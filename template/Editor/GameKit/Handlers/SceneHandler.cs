@@ -12,8 +12,51 @@ namespace GameKit.Handlers
     {
         public static ApiResponse HandleSave(HttpListenerRequest request)
         {
+            string savePath = null;
+
+            // Read optional path from request body
+            if (request.HasEntityBody)
+            {
+                try
+                {
+                    string body;
+                    using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                    {
+                        body = reader.ReadToEnd();
+                    }
+                    if (!string.IsNullOrWhiteSpace(body))
+                    {
+                        var json = JObject.Parse(body);
+                        savePath = json["path"]?.ToString();
+                    }
+                }
+                catch
+                {
+                    // No body or invalid JSON — proceed without path
+                }
+            }
+
             var scene = EditorSceneManager.GetActiveScene();
-            EditorSceneManager.SaveScene(scene);
+
+            // If scene is unnamed and no path provided, return an error
+            // instead of opening a Finder dialog that blocks the CLI
+            if (string.IsNullOrEmpty(scene.path) && string.IsNullOrEmpty(savePath))
+            {
+                return ApiResponse.Error("SCENE_UNNAMED",
+                    "Scene has not been saved yet. Provide a path, e.g.: gamekit scene save --path Assets/Scenes/MyScene.unity");
+            }
+
+            if (!string.IsNullOrEmpty(savePath))
+            {
+                EditorSceneManager.SaveScene(scene, savePath);
+            }
+            else
+            {
+                EditorSceneManager.SaveScene(scene);
+            }
+
+            // Re-fetch scene after save (path may have changed)
+            scene = EditorSceneManager.GetActiveScene();
             return ApiResponse.Success(new { scene = scene.name, path = scene.path });
         }
 

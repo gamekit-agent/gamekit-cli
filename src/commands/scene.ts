@@ -67,11 +67,13 @@ export function registerSceneCommand(program: Command): void {
   scene
     .command('save')
     .description('Save the active scene')
-    .action(async () => {
+    .option('--path <path>', 'Save path for unnamed scenes (e.g. Assets/Scenes/Main.unity)')
+    .action(async (cmdOptions: { path?: string }) => {
       try {
         const opts = program.opts() as OutputOptions;
         const info = await getConnection(process.cwd());
-        const result = await request<{ scene: string; path: string }>(info.port, 'POST', '/scene/save');
+        const body = cmdOptions.path ? { path: cmdOptions.path } : undefined;
+        const result = await request<{ scene: string; path: string }>(info.port, 'POST', '/scene/save', body);
         outputSuccess(result, opts);
         logSuccess(`Saved scene: ${result.scene} (${result.path})`);
       } catch (error) {
