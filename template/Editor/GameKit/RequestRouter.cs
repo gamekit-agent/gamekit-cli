@@ -148,6 +148,14 @@ namespace GameKit
                 {
                     response = MaterialHandler.HandleAssign(context.Request);
                 }
+                else if (method == "POST" && path == "/api/run-script")
+                {
+                    response = RunScriptHandler.Handle(context.Request);
+                }
+                else if (method == "POST" && path == "/api/scene/save")
+                {
+                    response = SceneHandler.HandleSave(context.Request);
+                }
                 else
                 {
                     statusCode = 404;

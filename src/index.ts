@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import { init } from './commands/init.js';
 import { runDoctor } from './commands/doctor.js';
 import { refresh } from './commands/refresh.js';
+import { runScript } from './commands/run-script.js';
 import { consoleCommand } from './commands/console.js';
 import { registerPlayCommand } from './commands/play.js';
 import { registerScreenshotCommand } from './commands/screenshot.js';
@@ -78,6 +79,21 @@ program
     }
   });
 
+// Run Script - execute arbitrary C# in Unity Editor
+program
+  .command('run-script <code>')
+  .description('Execute C# code in the Unity Editor')
+  .action(async (code: string) => {
+    try {
+      await runScript(code, program.opts());
+    } catch (error) {
+      if (error instanceof GameKitError) {
+        outputError(error.code, error.message);
+      }
+      throw error;
+    }
+  });
+
 // Console - read Unity console logs
 program
   .command('console')
@@ -86,6 +102,7 @@ program
   .option('--warnings', 'Show only warnings')
   .option('--info', 'Show only info messages')
   .option('--follow', 'Stream logs in real-time')
+  .option('--limit <n>', 'Limit number of entries returned')
   .action(async (cmdOptions) => {
     try {
       await consoleCommand({ ...program.opts(), ...cmdOptions });

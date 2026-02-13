@@ -278,6 +278,18 @@ gamekit list scenes                         # List scenes
 gamekit list prefabs                        # List prefabs
 ```
 
+### Run Script (execute arbitrary C#)
+```bash
+gamekit run-script "Debug.Log(1+1)"                       # Evaluate expression
+gamekit run-script "EditorUtility.RequestScriptReload()"   # Force domain reload
+gamekit run-script "Selection.activeGameObject.name"       # Query editor state
+```
+
+### Scene Save
+```bash
+gamekit scene save                          # Save the active scene
+```
+
 ### Screenshots & Build
 ```bash
 gamekit screenshot                          # Game view
@@ -286,6 +298,7 @@ gamekit screenshot --camera Main            # Specific camera
 gamekit build --platform windows            # Build game
 gamekit settings                            # Show project settings
 gamekit test                                # Run unit tests
+gamekit console --limit 10                  # Last 10 log entries
 ```
 
 ---
