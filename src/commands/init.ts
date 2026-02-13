@@ -89,6 +89,11 @@ export function ensureRequiredPackages(projectPath: string): void {
     modified = true;
   }
 
+  if (!manifest.dependencies['com.unity.test-framework']) {
+    manifest.dependencies['com.unity.test-framework'] = '1.4.5';
+    modified = true;
+  }
+
   if (modified) {
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
   }
