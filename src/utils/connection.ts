@@ -90,18 +90,28 @@ export async function healthCheck(port: number, timeoutMs: number = 3000): Promi
  * Discover and validate a running Unity instance.
  *
  * Reads the port file, validates the PID, and health-checks the server.
+ * Retries a few times with backoff to handle transient failures during
+ * domain reload (when Unity's HTTP server is temporarily down).
  * Returns ServerInfo on success, throws GameKitError on any failure.
  */
 export async function getConnection(projectPath: string): Promise<ServerInfo> {
   const info = readServerInfo(projectPath);
-  const healthy = await healthCheck(info.port);
 
-  if (!healthy) {
-    throw new GameKitError(
-      'UNITY_NOT_RESPONDING',
-      'Unity is running but the gamekit plugin is not responding.\n\nTry restarting Unity, or run: gamekit doctor'
-    );
+  const maxRetries = 3;
+  const initialBackoffMs = 500;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    const healthy = await healthCheck(info.port);
+    if (healthy) return info;
+
+    if (attempt < maxRetries - 1) {
+      const backoff = initialBackoffMs * Math.pow(2, attempt);
+      await new Promise(resolve => setTimeout(resolve, backoff));
+    }
   }
 
-  return info;
+  throw new GameKitError(
+    'UNITY_NOT_RESPONDING',
+    'Unity is running but the gamekit plugin is not responding.\n\nThis can happen during script compilation or domain reload.\nTry: gamekit wait && <your command>\nOr restart Unity: gamekit doctor'
+  );
 }
