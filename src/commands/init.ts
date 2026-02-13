@@ -9,6 +9,7 @@ import {
   createUnityProject,
   openUnityProject,
   isUnityProject,
+  findUrpTemplate,
   UnityInstall
 } from '../utils/unity.js';
 import { copyTemplateAsync } from '../utils/template.js';
@@ -282,11 +283,18 @@ async function createNewProject(): Promise<void> {
 
   console.log(chalk.blue(`\nCreating "${projectName}"...\n`));
 
-  // Step 3: Create Unity project
+  // Step 3: Find URP template and create Unity project
+  const templatePath = findUrpTemplate(answers.unityVersion);
+  if (templatePath) {
+    console.log(chalk.gray(`Using URP template: ${path.basename(templatePath)}\n`));
+  } else {
+    console.log(chalk.yellow('URP template not found — creating default (BiRP) project\n'));
+  }
+
   const spinner = ora('Creating Unity project (this may take a minute)...').start();
 
   try {
-    await createUnityProject(selectedInstall.path, projectPath);
+    await createUnityProject(selectedInstall.path, projectPath, templatePath ?? undefined);
     spinner.succeed('Unity project created');
   } catch (error) {
     spinner.fail('Failed to create Unity project');

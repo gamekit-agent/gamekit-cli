@@ -138,18 +138,68 @@ export function findUnityInstalls(platform: NodeJS.Platform = getPlatform()): Un
 }
 
 /**
+ * Get the templates directory for a given Unity version
+ */
+export function getTemplatesPath(
+  version: string,
+  platform: NodeJS.Platform = getPlatform()
+): string {
+  const hubPath = getUnityHubPath(platform);
+
+  if (isMac(platform)) {
+    return path.join(hubPath, version, 'Unity.app', 'Contents', 'Resources', 'PackageManager', 'ProjectTemplates');
+  } else if (isWindows(platform)) {
+    return path.join(hubPath, version, 'Editor', 'Data', 'Resources', 'PackageManager', 'ProjectTemplates');
+  }
+
+  throw new Error('Unsupported platform');
+}
+
+/**
+ * Find the URP project template .tgz for a given Unity version.
+ * Returns the full path or null if not found.
+ *
+ * Unity 6 (6000.x): match com.unity.template.3d-cross-platform-*.tgz
+ * Older (2022.x etc): match com.unity.template.urp-*.tgz
+ */
+export function findUrpTemplate(
+  version: string,
+  platform: NodeJS.Platform = getPlatform()
+): string | null {
+  const templatesDir = getTemplatesPath(version, platform);
+
+  if (!fs.existsSync(templatesDir)) return null;
+
+  const entries = fs.readdirSync(templatesDir);
+  const isV6 = isUnity6OrNewer(version);
+
+  const pattern = isV6
+    ? /^com\.unity\.template\.3d-cross-platform-.*\.tgz$/
+    : /^com\.unity\.template\.urp-.*\.tgz$/;
+
+  const match = entries.find(e => pattern.test(e));
+  if (!match) return null;
+
+  return path.join(templatesDir, match);
+}
+
+/**
  * Create a new Unity project using the CLI
  *
  * @param unityPath - Path to Unity executable
  * @param projectPath - Path where the project should be created
+ * @param templatePath - Optional path to a template .tgz to clone from
  * @returns Promise that resolves when project is created
  */
 export function createUnityProject(
   unityPath: string,
-  projectPath: string
+  projectPath: string,
+  templatePath?: string
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    const args = ['-createProject', projectPath, '-quit', '-batchmode'];
+    const args = templatePath
+      ? ['-createProject', projectPath, '-cloneFromTemplate', templatePath, '-quit', '-batchmode']
+      : ['-createProject', projectPath, '-quit', '-batchmode'];
 
     const child = spawn(unityPath, args, {
       stdio: 'inherit'
