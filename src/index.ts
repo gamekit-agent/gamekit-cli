@@ -24,6 +24,8 @@ import { registerTestCommand } from './commands/test.js';
 import { registerPrefabCommand } from './commands/prefab.js';
 import { registerMaterialCommand } from './commands/material.js';
 import { registerAnimatorCommand } from './commands/animator.js';
+import { wait } from './commands/wait.js';
+import { open } from './commands/open.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
 import { GameKitError } from './utils/connection.js';
 import { outputError } from './utils/output.js';
@@ -64,6 +66,21 @@ program
   .description('Diagnose setup issues and check configuration')
   .action(runDoctor);
 
+// Open - open project in correct Unity version
+program
+  .command('open')
+  .description('Open the project in Unity (using the correct editor version)')
+  .action(async () => {
+    try {
+      await open();
+    } catch (error) {
+      if (error instanceof GameKitError) {
+        outputError(error.code, error.message);
+      }
+      throw error;
+    }
+  });
+
 // Refresh - trigger Unity recompilation
 program
   .command('refresh')
@@ -86,6 +103,22 @@ program
   .action(async (code: string) => {
     try {
       await runScript(code, program.opts());
+    } catch (error) {
+      if (error instanceof GameKitError) {
+        outputError(error.code, error.message);
+      }
+      throw error;
+    }
+  });
+
+// Wait - block until Unity is idle
+program
+  .command('wait')
+  .description('Wait for Unity to finish compiling and become idle')
+  .option('--timeout <seconds>', 'Maximum wait time in seconds (default: 60)')
+  .action(async (cmdOptions) => {
+    try {
+      await wait({ ...program.opts(), ...cmdOptions });
     } catch (error) {
       if (error instanceof GameKitError) {
         outputError(error.code, error.message);

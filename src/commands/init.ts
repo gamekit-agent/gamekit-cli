@@ -106,6 +106,27 @@ export function ensureRequiredPackages(projectPath: string): void {
 }
 
 /**
+ * Ensure activeInputHandler is set to 2 (Both) in ProjectSettings.
+ * This allows both legacy Input.GetKeyDown and new Input System to work.
+ */
+export function ensureInputHandler(projectPath: string): void {
+  const settingsPath = path.join(projectPath, 'ProjectSettings', 'ProjectSettings.asset');
+  if (!fs.existsSync(settingsPath)) return;
+
+  let content = fs.readFileSync(settingsPath, 'utf-8');
+
+  // Match activeInputHandler: 0 or 1 and change to 2 (Both)
+  const replaced = content.replace(
+    /activeInputHandler:\s*[01]\b/,
+    'activeInputHandler: 2'
+  );
+
+  if (replaced !== content) {
+    fs.writeFileSync(settingsPath, replaced);
+  }
+}
+
+/**
  * Initialize an existing Unity project with Claude Code support
  */
 async function initExistingProject(projectPath: string): Promise<void> {
@@ -193,7 +214,16 @@ async function initExistingProject(projectPath: string): Promise<void> {
     process.exit(1);
   }
 
-  // Step 4: Configure project (add .gamekit/ to .gitignore)
+  // Step 4: Set input handler to Both (legacy + new Input System)
+  spinner.start('Configuring input system...');
+  try {
+    ensureInputHandler(projectPath);
+    spinner.succeed('Input system configured (Both)');
+  } catch (error) {
+    spinner.warn('Could not configure input system');
+  }
+
+  // Step 5: Configure project (add .gamekit/ to .gitignore)
   spinner.start('Configuring project...');
   try {
     addGameKitToGitignore(projectPath);
@@ -345,7 +375,16 @@ async function createNewProject(): Promise<void> {
     process.exit(1);
   }
 
-  // Step 7: Configure project (add .gamekit/ to .gitignore)
+  // Step 7: Set input handler to Both (legacy + new Input System)
+  spinner.start('Configuring input system...');
+  try {
+    ensureInputHandler(projectPath);
+    spinner.succeed('Input system configured (Both)');
+  } catch (error) {
+    spinner.warn('Could not configure input system');
+  }
+
+  // Step 8: Configure project (add .gamekit/ to .gitignore)
   spinner.start('Configuring project...');
   try {
     addGameKitToGitignore(projectPath);

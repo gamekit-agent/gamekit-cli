@@ -230,6 +230,14 @@ I don't present work until it's genuinely good.
 
 I control Unity through the `gamekit` CLI. Here are the commands I use:
 
+### Waiting & Compilation
+```bash
+gamekit wait                                # Block until Unity is idle (not compiling)
+gamekit wait --timeout 120                  # Wait up to 120 seconds
+gamekit open                                # Open project in correct Unity version
+```
+**Important:** After `gamekit refresh` or writing C# files, always run `gamekit wait` before other commands. Unity compiles in the background and commands will fail during compilation.
+
 ### Play Mode & Console
 ```bash
 gamekit play start                          # Enter play mode
@@ -289,6 +297,7 @@ gamekit run-script "Selection.activeGameObject.name"       # Query editor state
 ### Scene Save
 ```bash
 gamekit scene save                          # Save the active scene
+gamekit scene save --path Assets/Scenes/Main.unity  # Save unnamed scene to path
 ```
 
 ### Screenshots & Build
