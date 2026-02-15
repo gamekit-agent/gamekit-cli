@@ -100,6 +100,11 @@ export function ensureRequiredPackages(projectPath: string): void {
     modified = true;
   }
 
+  if (!manifest.dependencies['com.unity.inputsystem']) {
+    manifest.dependencies['com.unity.inputsystem'] = '1.7.0';
+    modified = true;
+  }
+
   if (modified) {
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
   }

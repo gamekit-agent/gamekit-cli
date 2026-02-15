@@ -24,6 +24,7 @@ import { registerTestCommand } from './commands/test.js';
 import { registerPrefabCommand } from './commands/prefab.js';
 import { registerMaterialCommand } from './commands/material.js';
 import { registerAnimatorCommand } from './commands/animator.js';
+import { registerInputCommand } from './commands/input.js';
 import { wait } from './commands/wait.js';
 import { open } from './commands/open.js';
 import { maybeCheckForUpdates, getCurrentVersion, checkForAppliedUpdate } from './utils/updater.js';
@@ -85,9 +86,10 @@ program
 program
   .command('refresh')
   .description('Trigger Unity recompilation and return results')
-  .action(async () => {
+  .option('--wait', 'Wait for Unity to become idle after refresh')
+  .action(async (cmdOptions) => {
     try {
-      await refresh(program.opts());
+      await refresh({ ...program.opts(), ...cmdOptions });
     } catch (error) {
       if (error instanceof GameKitError) {
         outputError(error.code, error.message);
@@ -197,6 +199,9 @@ registerPrefabCommand(program);
 
 // Animator - query Animator controllers
 registerAnimatorCommand(program);
+
+// Input - simulate keyboard and mouse input
+registerInputCommand(program);
 
 // Show error for unknown commands
 program.on('command:*', (operands) => {

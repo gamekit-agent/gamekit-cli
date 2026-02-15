@@ -156,6 +156,14 @@ namespace GameKit
                 {
                     response = SceneHandler.HandleSave(context.Request);
                 }
+                else if (method == "POST" && path == "/api/input/key")
+                {
+                    response = InputHandler.HandleKey(context.Request);
+                }
+                else if (method == "POST" && path == "/api/input/mouse")
+                {
+                    response = InputHandler.HandleMouse(context.Request);
+                }
                 else
                 {
                     statusCode = 404;
