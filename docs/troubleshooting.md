@@ -16,26 +16,38 @@ Common issues and how to fix them.
 
 If you installed Unity somewhere else, gamekit won't find it automatically. Move it to the default location or symlink it.
 
-## MCP relay not found
+## Can't connect to Unity
 
-**Symptom:** `gamekit doctor` reports MCP relay is missing.
-
-**This is normal** if you haven't opened Unity yet. The MCP relay installs when Unity opens and resolves packages.
-
-**Fix:** Open your project in Unity, wait for it to finish importing, then run `gamekit doctor` again.
-
-## Claude can't connect to Unity
-
-**Symptom:** Claude says it can't reach the MCP server, or MCP commands fail.
+**Symptom:** `gamekit doctor` fails, or commands return "Cannot connect to Unity."
 
 **Checklist:**
 
 1. **Unity is open** with your project loaded
-2. **MCP server is running** — in Unity, go to `Window > Unity MCP > Start Server`
-3. **Restart Claude Code** — sometimes the connection needs a fresh start
-4. **.mcp.json exists** — check your project root for this file
+2. **Wait for Unity to finish importing** — the plugin starts after initial import completes
+3. **Check `.gamekit/server.json`** exists in your project root — this file is created when the plugin starts
+4. **Restart Unity** if the plugin didn't start — it loads automatically on project open
 
-If all else fails, run `gamekit configure-mcp` to regenerate the MCP configuration.
+If all else fails, run `gamekit doctor` for a detailed diagnosis.
+
+## Commands fail during compilation
+
+**Symptom:** Commands return errors or unexpected results right after editing C# files.
+
+**Fix:** Unity compiles in the background. Always wait for compilation to finish:
+
+```bash
+gamekit refresh        # Trigger recompilation
+gamekit wait           # Block until Unity is idle
+gamekit console --errors  # Now safe to check results
+```
+
+## Unity unresponsive during domain reload
+
+**Symptom:** Commands time out briefly after compilation finishes.
+
+This is a known limitation. When Unity performs a domain reload (reloading compiled assemblies), the HTTP server briefly stops. The CLI retries automatically with exponential backoff, but very fast sequential commands may fail.
+
+**Workaround:** Add a short delay or use `gamekit wait` between `gamekit refresh` and subsequent commands.
 
 ## Commands not showing up
 
@@ -50,46 +62,44 @@ claude
 
 Claude Code reads commands from `.claude/commands/` in the current directory.
 
-If commands are still missing, run:
+If commands are missing, re-run:
 
 ```bash
-gamekit install-commands
+gamekit init
 ```
 
-## Build fails
+## Input simulation doesn't work
 
-**Symptom:** `/build` command fails or produces errors.
+**Symptom:** `gamekit input key space` returns an error.
 
 **Common causes:**
 
-1. **Missing build support** — you need to install platform build support in Unity Hub (e.g., "WebGL Build Support")
-2. **Script errors** — check the Unity console for compilation errors
-3. **Missing scenes** — make sure your scenes are added to Build Settings
+1. **Not in play mode** — Input simulation only works during play mode. Run `gamekit play start` first.
+2. **Input System package missing** — Run `gamekit init` to install `com.unity.inputsystem`, then reopen Unity.
+3. **No keyboard/mouse device** — This can happen in headless or batch mode Unity sessions.
 
-## Unity console errors
+## Build fails
 
-**Symptom:** Game doesn't work, Claude seems confused.
+**Symptom:** `gamekit build` fails or produces errors.
 
-**What to do:**
+**Common causes:**
 
-1. Open the Unity Console (`Window > General > Console`)
-2. Look for red error messages
-3. Tell Claude about the errors — paste them or use `/fix`
+1. **Missing build support** — Install platform build support in Unity Hub (e.g., "WebGL Build Support")
+2. **Script errors** — Check `gamekit console --errors` for compilation errors
+3. **Missing scenes** — Make sure your scenes are added to Build Settings
 
-Claude can often fix errors if you show it the exact error message.
+## Screenshot is blank or wrong
 
-## Performance issues
+**Symptom:** `gamekit screenshot` returns a blank or unexpected image.
 
-**Symptom:** Everything is slow — MCP responses take forever.
+**Common causes:**
 
-**This is a known limitation.** MCP communication has latency, especially for screenshots.
-
-**Workarounds:**
-
-- Use `/playtest` less frequently. Let Claude make multiple changes before testing
-- Be specific about what to check: "test if the player can jump" vs. "test everything"
-- For complex debugging, describe the problem in detail rather than relying on screenshots
+1. **Game view not visible** — Unity needs the Game view tab to be visible for game view screenshots
+2. **Wrong camera** — Use `--camera CameraName` to target a specific camera
+3. **Scene view** — Use `--scene` for scene view instead of game view
 
 ## Still stuck?
 
 Run `gamekit doctor` and share the output. It checks most common issues and will tell you what's wrong.
+
+Join our [Discord](https://discord.gg/jmJkNbwxYc) for help.

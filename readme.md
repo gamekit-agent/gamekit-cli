@@ -105,6 +105,13 @@ gamekit material assign Assets/Materials/RedMetal.mat Cube
 gamekit animator list Assets/Animations/PlayerController.controller
 ```
 
+**6. Input simulation (in play mode)**
+```bash
+gamekit input key space                    # Tap a key
+gamekit input key w --hold 0.5             # Hold a key
+gamekit input mouse left --at 400,300      # Click at position
+```
+
 ## How It Works
 
 gamekit installs a lightweight C# Editor plugin into your Unity project. The plugin runs an HTTP server on localhost (port range 17580-17589) that exposes Unity Editor APIs. The CLI sends requests to this server.
@@ -143,6 +150,7 @@ Claude Code  -->  gamekit CLI  -->  HTTP  -->  Unity Editor Plugin  -->  Unity A
 | `gamekit prefab` | Create, instantiate, and query prefab overrides |
 | `gamekit material` | Create materials, set properties, assign to renderers |
 | `gamekit animator` | Query Animator controller states and transitions |
+| `gamekit input` | Simulate keyboard and mouse input during play mode |
 
 All commands output JSON to stdout and human-readable text to stderr. Use `--json` to force JSON output.
 

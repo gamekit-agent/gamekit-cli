@@ -15,20 +15,15 @@ This template sets up Claude Code as your Unity game development expert.
 
 ## Setup Instructions
 
-1. **Create Unity Project**
-   - Open Unity Hub
-   - Create new 3D project in this folder
-   - Or open existing project and copy these files in
+1. **Run `gamekit init`**
+   - Creates a Unity project or adds gamekit to an existing one
+   - Installs the GameKit plugin and Claude configuration automatically
 
-2. **Install Unity MCP**
-   - Follow instructions at: https://github.com/anthropics/unity-mcp
-   - This connects Claude to Unity Editor
-
-3. **Install [Normcore](https://normcore.io/) (Optional)**
+2. **Install [Normcore](https://normcore.io/) (Optional)**
    - For multiplayer support
    - Package Manager → Add by name: `com.normalvr.normcore`
 
-4. **Start Building**
+3. **Start Building**
    - Open Claude Code in this folder
    - Say "I want to make a [game type]" or use `/new-game`
 

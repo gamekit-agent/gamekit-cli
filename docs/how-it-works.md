@@ -1,6 +1,6 @@
 # How It Works
 
-gamekit connects Claude Code to Unity through MCP (Model Context Protocol).
+gamekit connects Claude Code to Unity through a lightweight HTTP bridge.
 
 ## Architecture
 
@@ -9,56 +9,60 @@ gamekit connects Claude Code to Unity through MCP (Model Context Protocol).
 │   You describe  │────▶│  Claude Code    │────▶│     Unity       │
 │   what to build │     │  writes code    │     │   runs it       │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
-                               ▲
-                               │
-                               ▼
-                        ┌─────────────────┐
-                        │   Unity MCP     │
-                        │   server        │
+                               │                        ▲
+                               │                        │
+                               ▼                        │
+                        ┌─────────────────┐             │
+                        │   gamekit CLI   │─── HTTP ────┘
+                        │   commands      │  localhost
                         └─────────────────┘
 ```
 
 ## The Flow
 
 1. **You** describe what you want: a feature, a fix, a new system
-2. **Claude Code** reads your project, plans the implementation, writes code
-3. **Unity MCP** gives Claude access to the Unity Editor — scenes, scripts, console, screenshots
+2. **Claude Code** reads your project, plans the implementation, writes C# code
+3. **gamekit CLI** sends HTTP requests to the Unity Editor plugin to compile, inspect scenes, take screenshots, simulate input, and more
 4. **Unity** runs your game so you can test it
 
-## What is MCP?
+## The Unity Plugin
 
-MCP (Model Context Protocol) is a standard for connecting AI assistants to external tools. The Unity MCP server runs inside the Unity Editor and exposes capabilities like:
+gamekit installs a C# Editor plugin into `Assets/Editor/GameKit/`. This plugin:
 
-- **Scene access:** Read and modify GameObjects, components, hierarchy
-- **Script management:** Create, read, update C# files
-- **Console output:** See errors, warnings, logs
-- **Screenshots:** Capture the game view or scene view
-- **Build system:** Trigger builds for different platforms
+- Starts an HTTP server on localhost (port range 17580-17589) when Unity opens
+- Exposes Unity Editor APIs as REST endpoints
+- Runs on a background thread, dispatching work to Unity's main thread
+- Stores connection info in `.gamekit/server.json`
 
-## What gamekit Sets Up
+The plugin architecture follows a handler/service pattern:
+- **Handlers** parse HTTP requests and return `ApiResponse` envelopes
+- **Services** contain the actual Unity logic
+- **RequestRouter** dispatches requests to the right handler
+
+## What gamekit init Sets Up
 
 When you run `gamekit init`, it:
 
-1. **Creates a Unity project** with the standard folder structure
-2. **Installs Unity MCP** as a package dependency
-3. **Generates .mcp.json** so Claude Code knows how to connect
-4. **Installs slash commands** that wrap common workflows (`/playtest`, `/build`, etc.)
-5. **Installs skills and agents** for more complex tasks
+1. **Installs the GameKit plugin** into `Assets/Editor/GameKit/`
+2. **Ensures Unity packages** — Newtonsoft JSON (serialization), Input System (input simulation), Test Framework, UGUI
+3. **Configures input** — Sets `activeInputHandler` to "Both" so legacy `Input` and the new Input System coexist
+4. **Installs Claude config** — Commands, skills, and agents in `.claude/`
+5. **Configures .gitignore** — Adds `.gamekit/` to prevent committing runtime state
 
 ## The Commands Layer
 
-On top of MCP, gamekit installs slash commands that encode good workflows:
+On top of the CLI, gamekit installs slash commands that encode good workflows:
 
-- `/new-game`: Creates a design doc first, then implements
-- `/playtest`: Builds, runs, captures output, reports issues
+- `/new-game`: Creates a design doc first, then implements step by step
+- `/playtest`: Enters play mode, checks for errors, captures screenshots
 - `/build`: Handles platform-specific build settings
 
-## Why This Approach?
+## Why HTTP?
 
-Direct MCP access is powerful but low-level. The commands layer adds:
+The CLI-to-Unity HTTP bridge is fast, composable, and scriptable:
 
-- **Guardrails:** Encourages planning before coding
-- **Best practices:** Encodes patterns that work well
-- **Discoverability:** You can see what's available with `/help`
-
-You can always bypass the commands and talk to Claude directly. The commands are shortcuts, not restrictions.
+- Commands run instantly with minimal overhead
+- JSON responses pipe naturally into other tools
+- Each command is a single HTTP request (or a small sequence for input simulation)
+- The plugin starts automatically — no manual server management
+- All scene modifications are undoable (Ctrl+Z in Unity)

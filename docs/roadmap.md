@@ -18,17 +18,11 @@ Claude writes code, not art. For a complete game you'll need:
 - ProBuilder (included in Unity) for basic 3D modeling
 - Placeholder assets until you have real ones
 
-### MCP can be slow
+### Domain reload interrupts
 
-The Unity MCP server communicates through screenshots and text. This has inherent latency:
-- Screenshots take time to capture and transmit
-- Claude needs to "see" the game to understand state
-- Back-and-forth iteration is slower than direct coding
+When Unity reloads compiled assemblies (domain reload), the GameKit HTTP server briefly stops. This means commands issued immediately after compilation may time out.
 
-**Workarounds:**
-- Be specific about what to check
-- Batch changes before testing
-- Describe problems in detail rather than relying solely on screenshots
+**Workaround:** Use `gamekit wait` after `gamekit refresh` to block until Unity is idle.
 
 ### Context grows fast
 
@@ -39,23 +33,10 @@ Complex games with lots of iteration can hit context limits:
 
 **Workarounds:**
 - Start fresh conversations for new features
-- Keep projects focused — one game per project
+- Keep projects focused
 - Use specific commands rather than open-ended requests
 
 ## What's Coming
-
-### Faster Unity communication
-
-We're working on adding direct communication to gamekit that bypasses MCP limitations:
-
-```bash
-# Future: Unix-philosophy style commands
-gamekit get-console | grep -i error | head -10
-gamekit get-hierarchy
-gamekit run-tests
-```
-
-Same pattern that works well for Node.js and other runtimes: fast, composable, scriptable.
 
 ### Better asset workflows
 
@@ -63,13 +44,6 @@ Exploring integrations for:
 - Asset store search and import
 - Procedural generation for placeholders
 - AI image generation for textures/sprites
-
-### Test integration
-
-Automated testing support:
-- Run Unity Test Framework tests
-- Generate tests for game logic
-- Catch regressions automatically
 
 ### Multi-file awareness
 
@@ -87,4 +61,4 @@ If you want to help, the most valuable contributions are:
 3. **Platform support:** Windows and Linux testing
 4. **Documentation:** Tutorials, examples, guides
 
-Open an issue or PR at the repo. We're happy to help you get started.
+Open an issue or PR at the [repo](https://github.com/gamekit-agent/gamekit-cli). We're happy to help you get started.

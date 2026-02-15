@@ -56,6 +56,7 @@ You'll only see the finished, working result.
 I interact with the Unity Editor through the `gamekit` command-line tool. This lets me:
 - Start/stop play mode and check for errors
 - Create, inspect, and modify GameObjects
+- Simulate keyboard and mouse input for play-testing
 - Take screenshots for visual verification
 - Build the game for any platform
 - Read and write C# scripts directly
@@ -299,6 +300,18 @@ gamekit run-script "Selection.activeGameObject.name"       # Query editor state
 gamekit scene save                          # Save the active scene
 gamekit scene save --path Assets/Scenes/Main.unity  # Save unnamed scene to path
 ```
+
+### Input Simulation (requires play mode)
+```bash
+gamekit input key space                     # Tap space (press + release)
+gamekit input key w --hold 0.5              # Hold W for 0.5 seconds
+gamekit input key space --down              # Press space (no release)
+gamekit input key space --up                # Release space
+gamekit input mouse left                    # Left click
+gamekit input mouse left --at 400,300       # Click at screen position
+gamekit input mouse right --hold 1          # Hold right-click for 1 second
+```
+**Note:** Input simulation uses the Unity Input System package. Keys: `a`-`z`, `0`-`9`, `space`, `enter`, `escape`, `shift`, `ctrl`, `tab`, `up`/`down`/`left`/`right`, `f1`-`f12`. Mouse buttons: `left`/`right`/`middle` (or `0`/`1`/`2`).
 
 ### Screenshots & Build
 ```bash
