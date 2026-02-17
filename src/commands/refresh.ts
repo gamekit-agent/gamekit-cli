@@ -14,7 +14,7 @@ interface RefreshResult {
   }>;
 }
 
-export async function refresh(options: OutputOptions): Promise<void> {
+export async function refresh(options: OutputOptions & { wait?: boolean }): Promise<void> {
   const info = await getConnection(process.cwd());
 
   let result = await request<RefreshResult>(info.port, 'POST', '/refresh', undefined, 60000);
@@ -45,11 +45,53 @@ export async function refresh(options: OutputOptions): Promise<void> {
     process.exit(1);
   }
 
-  outputSuccess({ success: true, errors: result.errors, errorCount: 0, warningCount }, options);
-
   if (warningCount > 0) {
     logSuccess(`Compilation successful (${warningCount} warning(s))`);
   } else {
     logSuccess('Compilation successful');
   }
+
+  if (options.wait) {
+    await waitForIdle(info.port);
+  }
+
+  outputSuccess({ success: true, errors: result.errors, errorCount: 0, warningCount }, options);
+}
+
+async function waitForIdle(port: number): Promise<void> {
+  const timeoutMs = 60000;
+  const pollIntervalMs = 500;
+  const start = Date.now();
+  let lastStatus = '';
+
+  while (Date.now() - start < timeoutMs) {
+    try {
+      const res = await fetch(`http://localhost:${port}/api/health`, {
+        signal: AbortSignal.timeout(3000),
+      });
+      const body = await res.json() as { success: boolean; data: { status: string } };
+
+      if (body.success) {
+        const status = body.data.status;
+        if (status !== lastStatus) {
+          if (status === 'compiling') {
+            log('Unity is compiling...');
+          } else if (status === 'idle' || status === 'playing' || status === 'paused') {
+            logSuccess(`Unity is ${status}`);
+            return;
+          }
+          lastStatus = status;
+        }
+      }
+    } catch {
+      if (lastStatus !== 'reloading') {
+        log('Waiting for Unity (domain reload)...');
+        lastStatus = 'reloading';
+      }
+    }
+
+    await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
+  }
+
+  throw new GameKitError('TIMEOUT', 'Unity did not become idle within 60s after refresh');
 }
