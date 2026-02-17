@@ -19,6 +19,7 @@ interface TransformResult {
 }
 
 function parseVector3(str: string): Vector3 {
+  str = str.replace(/\u2212/g, '-');
   const parts = str.split(',');
   if (parts.length !== 3) {
     throw new Error(`Invalid vector format: "${str}". Expected x,y,z (e.g., 1,2,3)`);
