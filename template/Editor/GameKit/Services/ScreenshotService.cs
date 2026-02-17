@@ -37,6 +37,24 @@ namespace GameKit.Services
             }
         }
 
+        /// <summary>
+        /// Captures the full game view including IMGUI/OnGUI overlays.
+        /// Only works in play mode.
+        /// </summary>
+        public static byte[] CaptureGameView()
+        {
+            Texture2D tex = null;
+            try
+            {
+                tex = ScreenCapture.CaptureScreenshotAsTexture();
+                return tex.EncodeToPNG();
+            }
+            finally
+            {
+                if (tex != null) Object.DestroyImmediate(tex);
+            }
+        }
+
         public static Camera FindGameCamera()
         {
             if (Camera.main != null) return Camera.main;

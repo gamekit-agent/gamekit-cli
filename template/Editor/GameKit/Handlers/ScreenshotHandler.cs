@@ -6,6 +6,7 @@ using GameKit.Models;
 using GameKit.Services;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEditor;
 
 namespace GameKit.Handlers
 {
@@ -33,6 +34,25 @@ namespace GameKit.Handlers
                         }
                         break;
                     case "game":
+                        // In play mode, use ScreenCapture to include IMGUI overlays
+                        if (EditorApplication.isPlaying)
+                        {
+                            byte[] gameViewBytes = ScreenshotService.CaptureGameView();
+                            if (format == "binary")
+                            {
+                                WriteBinaryResponse(context, gameViewBytes);
+                            }
+                            else
+                            {
+                                var dir2 = Path.Combine(Directory.GetCurrentDirectory(), ".gamekit", "screenshots");
+                                Directory.CreateDirectory(dir2);
+                                var filename2 = $"screenshot_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+                                var filePath2 = Path.Combine(dir2, filename2);
+                                File.WriteAllBytes(filePath2, gameViewBytes);
+                                WriteJsonResponse(context, ApiResponse.Success(new { path = filePath2 }), 200);
+                            }
+                            return;
+                        }
                         camera = ScreenshotService.FindGameCamera();
                         if (camera == null)
                         {

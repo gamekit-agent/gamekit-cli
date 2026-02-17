@@ -81,6 +81,11 @@ namespace GameKit.Services
                         var name = asm.GetName().Name;
                         if (asm.IsDynamic || referenced.Contains(name)) continue;
 
+                        // Skip BCL facade assemblies — they re-export types from
+                        // mscorlib/System.Core and cause ambiguity errors
+                        if (name == "netstandard" || name.StartsWith("System."))
+                            continue;
+
                         // Reference Unity modules, editor assemblies, and user code
                         if (name.StartsWith("UnityEngine") ||
                             name.StartsWith("UnityEditor") ||
@@ -103,6 +108,7 @@ namespace GameKit.Services
                 _runMethod.Invoke(_evaluator, new object[] { "using System.Collections.Generic;" });
                 _runMethod.Invoke(_evaluator, new object[] { "using UnityEngine;" });
                 _runMethod.Invoke(_evaluator, new object[] { "using UnityEditor;" });
+                _runMethod.Invoke(_evaluator, new object[] { "using Object = UnityEngine.Object;" });
             }
             catch (Exception ex)
             {
